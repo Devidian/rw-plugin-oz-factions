@@ -1,6 +1,6 @@
 name: "OZ - Factions"
 main: de.omegazirkel.risingworld.PlayerFactions
-version: 0.1.0
+version: 0.2.0
 author: "Maik 'Devidian' Laschober"
 team: "Omega Zirkel"
 description: "Player-created factions with membership, accounts and shared protection"

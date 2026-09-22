@@ -19,6 +19,11 @@ consume the public faction facade in later, separately released integrations.
 licenses and optional Discord channel IDs. Runtime settings are world-scoped as
 `settings.<world>.json` and managed through the shared Tools settings UI.
 
+When a compatible OZ - Shop is already loaded, its plugin-offers tab contains
+five leader-only faction extras. They debit the faction account in Wallet's
+default currency and credit the world account; duplicate callback delivery is
+deduplicated by the durable Shop correlation ID.
+
 ## Runtime behavior
 
 - The server's configured default permission group is copied for new factions.

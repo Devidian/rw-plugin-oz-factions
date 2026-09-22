@@ -23,6 +23,8 @@ public final class PluginSettings {
     public long foundationCost = 5000L;
     public long memberSlotBaseCost = 1000L;
     public double memberSlotIncrease = .1d;
+    public long claimLicenseBaseCost = 1000L, traderLicenseBaseCost = 1000L, crierLicenseBaseCost = 1000L, serviceNpcLicenseBaseCost = 1000L;
+    public double claimLicenseIncrease = .1d, traderLicenseIncrease = .1d, crierLicenseIncrease = .1d, serviceNpcLicenseIncrease = .1d;
     public int defaultClaimLicenses = 1, defaultTraderLicenses = 0, defaultCrierLicenses = 1, defaultServiceNpcLicenses = 2;
     public long discordLifecycleChannelId, discordMembershipChannelId, discordExtrasChannelId;
     private Path settingsFile;
@@ -38,18 +40,27 @@ public final class PluginSettings {
             current = JsonSettingsFile.loadFlat(settingsFile); defaults = JsonSettingsFile.loadFlat(defaultFile);
             defaultMemberLimit = integer("defaultMemberLimit", 10); foundationCost = positiveLong("foundationCost", 5000L);
             memberSlotBaseCost = positiveLong("memberSlotBaseCost", 1000L); memberSlotIncrease = decimal("memberSlotIncrease", .1d);
+            claimLicenseBaseCost=positiveLong("claimLicenseBaseCost",1000L); claimLicenseIncrease=decimal("claimLicenseIncrease",.1d);
+            traderLicenseBaseCost=positiveLong("traderLicenseBaseCost",1000L); traderLicenseIncrease=decimal("traderLicenseIncrease",.1d);
+            crierLicenseBaseCost=positiveLong("crierLicenseBaseCost",1000L); crierLicenseIncrease=decimal("crierLicenseIncrease",.1d);
+            serviceNpcLicenseBaseCost=positiveLong("serviceNpcLicenseBaseCost",1000L); serviceNpcLicenseIncrease=decimal("serviceNpcLicenseIncrease",.1d);
             defaultClaimLicenses = integer("defaultClaimLicenses", 1); defaultTraderLicenses = integer("defaultTraderLicenses", 0);
             defaultCrierLicenses = integer("defaultCrierLicenses", 1); defaultServiceNpcLicenses = integer("defaultServiceNpcLicenses", 2);
             discordLifecycleChannelId = positiveLong("discordLifecycleChannelId", 0L); discordMembershipChannelId = positiveLong("discordMembershipChannelId", 0L); discordExtrasChannelId = positiveLong("discordExtrasChannelId", 0L);
         } catch (IOException | NumberFormatException ex) { throw new IllegalStateException("Cannot load faction settings", ex); }
     }
     public long memberSlotCost(int alreadyPurchased) { return Math.round(memberSlotBaseCost + (memberSlotBaseCost * memberSlotIncrease) * Math.max(0, alreadyPurchased)); }
+    public long extraCost(FactionExtra extra, int alreadyPurchased) { long base=switch(extra) { case MEMBER_SLOT -> memberSlotBaseCost; case CLAIM_LICENSE -> claimLicenseBaseCost; case TRADER_LICENSE -> traderLicenseBaseCost; case CRIER_LICENSE -> crierLicenseBaseCost; case SERVICE_NPC_LICENSE -> serviceNpcLicenseBaseCost; }; double increase=switch(extra) { case MEMBER_SLOT -> memberSlotIncrease; case CLAIM_LICENSE -> claimLicenseIncrease; case TRADER_LICENSE -> traderLicenseIncrease; case CRIER_LICENSE -> crierLicenseIncrease; case SERVICE_NPC_LICENSE -> serviceNpcLicenseIncrease; }; return Math.round(base + (base * increase) * Math.max(0, alreadyPurchased)); }
     public List<AdminSettingsEntry> adminSettingsEntries() { return Arrays.asList(
             AdminSettingsEntry.group("factions", "Factions", "Faction limits and prices."),
             entry("defaultMemberLimit", "Default member limit", "Members available before extra slots.", AdminSettingsType.INTEGER),
             entry("foundationCost", "Foundation cost", "Default-currency cost for a new faction.", AdminSettingsType.INTEGER),
             entry("memberSlotBaseCost", "Extra member slot cost", "Base cost for an extra member slot.", AdminSettingsType.INTEGER),
             entry("memberSlotIncrease", "Extra slot price increase", "Increase per previously purchased slot.", AdminSettingsType.STRING),
+            entry("claimLicenseBaseCost", "Land Claim license cost", "Base cost for an extra Land Claim license.", AdminSettingsType.INTEGER), entry("claimLicenseIncrease", "Land Claim price increase", "Increase per bought Land Claim license.", AdminSettingsType.STRING),
+            entry("traderLicenseBaseCost", "Trader license cost", "Base cost for an extra trader license.", AdminSettingsType.INTEGER), entry("traderLicenseIncrease", "Trader price increase", "Increase per bought trader license.", AdminSettingsType.STRING),
+            entry("crierLicenseBaseCost", "Marktschreier license cost", "Base cost for an extra Marktschreier license.", AdminSettingsType.INTEGER), entry("crierLicenseIncrease", "Marktschreier price increase", "Increase per bought Marktschreier license.", AdminSettingsType.STRING),
+            entry("serviceNpcLicenseBaseCost", "Service NPC license cost", "Base cost for an extra Service NPC license.", AdminSettingsType.INTEGER), entry("serviceNpcLicenseIncrease", "Service NPC price increase", "Increase per bought Service NPC license.", AdminSettingsType.STRING),
             entry("defaultClaimLicenses", "Default claim licenses", "Faction claim licenses before extras.", AdminSettingsType.INTEGER),
             entry("defaultTraderLicenses", "Default trader licenses", "Faction trader licenses before extras.", AdminSettingsType.INTEGER),
             entry("defaultCrierLicenses", "Default crier licenses", "Faction crier licenses before extras.", AdminSettingsType.INTEGER),

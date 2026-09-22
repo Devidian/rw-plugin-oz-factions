@@ -18,6 +18,7 @@ public final class FactionRepository {
             s.executeUpdate("CREATE TABLE IF NOT EXISTS factions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL COLLATE NOCASE UNIQUE, group_name TEXT NOT NULL UNIQUE, color TEXT NOT NULL, founded_at INTEGER NOT NULL, founder_db_id INTEGER NOT NULL, leader_db_id INTEGER NOT NULL UNIQUE, account_id TEXT NOT NULL UNIQUE, extra_member_slots INTEGER NOT NULL DEFAULT 0, extra_claim_licenses INTEGER NOT NULL DEFAULT 0, extra_trader_licenses INTEGER NOT NULL DEFAULT 0, extra_crier_licenses INTEGER NOT NULL DEFAULT 0, extra_service_npc_licenses INTEGER NOT NULL DEFAULT 0)");
             s.executeUpdate("CREATE TABLE IF NOT EXISTS faction_members (faction_id INTEGER NOT NULL REFERENCES factions(id) ON DELETE CASCADE, player_db_id INTEGER NOT NULL UNIQUE, joined_at INTEGER NOT NULL, contributed INTEGER NOT NULL DEFAULT 0, role TEXT NOT NULL, PRIMARY KEY(faction_id, player_db_id))");
             s.executeUpdate("CREATE TABLE IF NOT EXISTS faction_applications (id INTEGER PRIMARY KEY AUTOINCREMENT, faction_id INTEGER NOT NULL REFERENCES factions(id) ON DELETE CASCADE, player_db_id INTEGER NOT NULL, status TEXT NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, UNIQUE(faction_id, player_db_id))");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS faction_extra_purchases (correlation_id TEXT PRIMARY KEY, faction_id INTEGER NOT NULL REFERENCES factions(id) ON DELETE CASCADE, extra_key TEXT NOT NULL, price INTEGER NOT NULL, purchased_at INTEGER NOT NULL)");
             s.executeUpdate("DELETE FROM faction_members WHERE faction_id NOT IN (SELECT id FROM factions)");
             s.executeUpdate("DELETE FROM faction_applications WHERE faction_id NOT IN (SELECT id FROM factions)");
         } catch (SQLException ex) { throw new IllegalStateException("Cannot initialize faction database", ex); }
@@ -67,6 +68,20 @@ public final class FactionRepository {
     public synchronized void changeRole(int playerDbId,FactionRole role){try(PreparedStatement s=db.prepareStatement("UPDATE faction_members SET role=? WHERE player_db_id=?")){s.setString(1,role.name());s.setInt(2,playerDbId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot change faction role",ex);}}
     public synchronized void updateColor(int factionId,String color){try(PreparedStatement s=db.prepareStatement("UPDATE factions SET color=? WHERE id=?")){s.setString(1,color);s.setInt(2,factionId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot update faction color",ex);}}
     public synchronized void addContribution(int playerDbId,long value){try(PreparedStatement s=db.prepareStatement("UPDATE faction_members SET contributed=contributed+? WHERE player_db_id=?")){s.setLong(1,value);s.setInt(2,playerDbId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot update faction contribution",ex);}}
+    public synchronized boolean recordExtraPurchase(int factionId, FactionExtra extra, long price, String correlationId) {
+        if (correlationId == null || correlationId.isBlank()) throw new IllegalArgumentException("Purchase correlation is required.");
+        try {
+            db.setAutoCommit(false);
+            try (PreparedStatement insert=db.prepareStatement("INSERT OR IGNORE INTO faction_extra_purchases(correlation_id,faction_id,extra_key,price,purchased_at) VALUES(?,?,?,?,?)")) {
+                insert.setString(1,correlationId); insert.setInt(2,factionId); insert.setString(3,extra.name()); insert.setLong(4,price); insert.setLong(5,System.currentTimeMillis());
+                if (insert.executeUpdate() == 0) { db.commit(); return false; }
+            }
+            String column=switch(extra) { case MEMBER_SLOT -> "extra_member_slots"; case CLAIM_LICENSE -> "extra_claim_licenses"; case TRADER_LICENSE -> "extra_trader_licenses"; case CRIER_LICENSE -> "extra_crier_licenses"; case SERVICE_NPC_LICENSE -> "extra_service_npc_licenses"; };
+            try (PreparedStatement update=db.prepareStatement("UPDATE factions SET " + column + "=" + column + "+1 WHERE id=?")) { update.setInt(1,factionId); if(update.executeUpdate()!=1) throw new SQLException("Faction disappeared during purchase."); }
+            db.commit(); return true;
+        } catch(SQLException ex) { try { db.rollback(); } catch(SQLException ignored) { } throw new IllegalStateException("Cannot record faction extra purchase",ex); }
+        finally { try { db.setAutoCommit(true); } catch(SQLException ex) { throw new IllegalStateException("Cannot restore database transaction mode",ex); } }
+    }
     public List<FactionMember> members(int factionId){try(PreparedStatement s=db.prepareStatement("SELECT faction_id,player_db_id,joined_at,contributed,role FROM faction_members WHERE faction_id=? ORDER BY joined_at ASC")){s.setInt(1,factionId);try(ResultSet r=s.executeQuery()){java.util.ArrayList<FactionMember> all=new java.util.ArrayList<>();while(r.next())all.add(new FactionMember(r.getInt(1),r.getInt(2),r.getLong(3),r.getLong(4),FactionRole.valueOf(r.getString(5))));return List.copyOf(all);}}catch(SQLException ex){throw new IllegalStateException("Cannot load faction members",ex);}}
     public synchronized void deleteFaction(int factionId){
         try {

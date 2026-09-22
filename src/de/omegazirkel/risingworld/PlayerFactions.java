@@ -28,11 +28,18 @@ public final class PlayerFactions extends Plugin implements Listener, FileChange
     public Integer getPlayerFactionId(int playerDbId) { return runtime == null ? null : runtime.service().factionIdFor(playerDbId); }
     public String getPlayerFactionRole(int playerDbId) { return runtime == null ? null : runtime.service().roleFor(playerDbId); }
     public String getPlayerFactionAccountId(int playerDbId) { return runtime == null ? null : runtime.service().accountIdFor(playerDbId); }
+    public String getFactionAccountId(int factionId) { return runtime == null ? null : runtime.service().accountIdForFaction(factionId); }
     public Long getPlayerFactionAccountBalance(int playerDbId) { return runtime == null ? null : runtime.service().accountBalanceFor(playerDbId); }
+    public Long getFactionAccountBalance(int factionId) { return runtime == null ? null : runtime.service().accountBalanceForFaction(factionId); }
     public Integer getPlayerFactionClaimLicenseCount(int playerDbId) { return runtime == null || runtime.service().factionIdFor(playerDbId) == null ? null : runtime.service().claimLicenseCount(playerDbId); }
+    public Integer getFactionClaimLicenseCount(int factionId) { return runtime == null ? null : runtime.service().claimLicenseCountForFaction(factionId); }
     public Integer getPlayerFactionTraderLicenseCount(int playerDbId) { return runtime == null || runtime.service().factionIdFor(playerDbId) == null ? null : runtime.service().traderLicenseCount(playerDbId); }
+    public Integer getFactionTraderLicenseCount(int factionId) { return runtime == null ? null : runtime.service().traderLicenseCountForFaction(factionId); }
     public Integer getPlayerFactionCrierLicenseCount(int playerDbId) { return runtime == null || runtime.service().factionIdFor(playerDbId) == null ? null : runtime.service().crierLicenseCount(playerDbId); }
+    public Integer getFactionCrierLicenseCount(int factionId) { return runtime == null ? null : runtime.service().crierLicenseCountForFaction(factionId); }
     public Integer getPlayerFactionServiceLicenseCount(int playerDbId) { return runtime == null || runtime.service().factionIdFor(playerDbId) == null ? null : runtime.service().serviceNpcLicenseCount(playerDbId); }
+    public Integer getFactionServiceLicenseCount(int factionId) { return runtime == null ? null : runtime.service().serviceNpcLicenseCountForFaction(factionId); }
+    public Integer getFactionMemberLimit(int factionId) { return runtime == null ? null : runtime.service().memberLimitForFaction(factionId); }
     public String getFactionName(int factionId) { return runtime == null ? null : runtime.service().factionName(factionId); }
     public boolean isPlayerFactionLeader(int playerDbId) { return runtime != null && runtime.service().isLeader(playerDbId); }
     public boolean canPlayerFactionLeader(int playerDbId) { return isPlayerFactionLeader(playerDbId); }

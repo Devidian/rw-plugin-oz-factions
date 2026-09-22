@@ -28,10 +28,15 @@ public final class FactionService {
     public Integer factionIdFor(int playerDbId) { return repository.member(playerDbId).map(FactionMember::factionId).orElse(null); }
     public String roleFor(int playerDbId) { return repository.member(playerDbId).map(member -> member.role().name()).orElse(null); }
     public String accountIdFor(int playerDbId) { return repository.factionFor(playerDbId).map(Faction::accountId).orElse(null); }
+    public String accountIdForFaction(int factionId) { return repository.faction(factionId).map(Faction::accountId).orElse(null); }
     public Long accountBalanceFor(int playerDbId) {
         String accountId = accountIdFor(playerDbId); if (accountId == null) return null;
         String currency = wallet.defaultCurrencyIdentifier();
         return wallet.systemAccountBalances(accountId).stream().filter(balance -> balance.currencyIdentifier().equalsIgnoreCase(currency)).mapToLong(WalletBridge.SystemBalanceInfo::balance).findFirst().orElse(0L);
+    }
+    public Long accountBalanceForFaction(int factionId) {
+        String accountId=accountIdForFaction(factionId); if(accountId==null)return null;
+        String currency=wallet.defaultCurrencyIdentifier(); return wallet.systemAccountBalances(accountId).stream().filter(b -> b.currencyIdentifier().equalsIgnoreCase(currency)).mapToLong(WalletBridge.SystemBalanceInfo::balance).findFirst().orElse(0L);
     }
     public List<FactionAccountBalance> accountBalancesFor(int playerDbId) {
         String accountId = accountIdFor(playerDbId);
@@ -51,9 +56,24 @@ public final class FactionService {
     public String currencyIdentifier() { return wallet.defaultCurrencyIdentifier(); }
     public List<WalletBridge.CurrencyInfo> currencies() { return wallet.listCurrencies(); }
     public int claimLicenseCount(int playerDbId) { return repository.factionFor(playerDbId).map(f -> settings.defaultClaimLicenses + f.extraClaimLicenses()).orElse(0); }
+    public int claimLicenseCountForFaction(int factionId) { return repository.faction(factionId).map(f -> settings.defaultClaimLicenses + f.extraClaimLicenses()).orElse(0); }
     public int traderLicenseCount(int playerDbId) { return repository.factionFor(playerDbId).map(f -> settings.defaultTraderLicenses + f.extraTraderLicenses()).orElse(0); }
+    public int traderLicenseCountForFaction(int factionId) { return repository.faction(factionId).map(f -> settings.defaultTraderLicenses + f.extraTraderLicenses()).orElse(0); }
     public int crierLicenseCount(int playerDbId) { return repository.factionFor(playerDbId).map(f -> settings.defaultCrierLicenses + f.extraCrierLicenses()).orElse(0); }
+    public int crierLicenseCountForFaction(int factionId) { return repository.faction(factionId).map(f -> settings.defaultCrierLicenses + f.extraCrierLicenses()).orElse(0); }
     public int serviceNpcLicenseCount(int playerDbId) { return repository.factionFor(playerDbId).map(f -> settings.defaultServiceNpcLicenses + f.extraServiceNpcLicenses()).orElse(0); }
+    public int serviceNpcLicenseCountForFaction(int factionId) { return repository.faction(factionId).map(f -> settings.defaultServiceNpcLicenses + f.extraServiceNpcLicenses()).orElse(0); }
+    public int memberLimitForFaction(int factionId) { return repository.faction(factionId).map(this::memberLimit).orElse(0); }
+    public long extraPrice(int factionId, FactionExtra extra) { return repository.faction(factionId).map(f -> settings.extraCost(extra, extraCount(f, extra))).orElse(-1L); }
+    private int extraCount(Faction f, FactionExtra extra) { return switch(extra) { case MEMBER_SLOT -> f.extraMemberSlots(); case CLAIM_LICENSE -> f.extraClaimLicenses(); case TRADER_LICENSE -> f.extraTraderLicenses(); case CRIER_LICENSE -> f.extraCrierLicenses(); case SERVICE_NPC_LICENSE -> f.extraServiceNpcLicenses(); }; }
+    public boolean completeExtraPurchase(int playerDbId, FactionExtra extra, long displayedPrice, String correlationId) {
+        Faction faction=repository.factionFor(playerDbId).orElseThrow(() -> new IllegalStateException("Faction is no longer available."));
+        if(faction.leaderDbId()!=playerDbId) throw new IllegalStateException("Only the faction leader can buy extras.");
+        long current=extraPrice(faction.id(),extra); if(current!=displayedPrice) throw new IllegalStateException("The faction extra price changed.");
+        boolean created=repository.recordExtraPurchase(faction.id(),extra,current,correlationId);
+        if(created) discord.extra(playerName(playerDbId), faction.name(), extra.label());
+        return created;
+    }
     public int memberLimit(Faction faction) { return settings.defaultMemberLimit + faction.extraMemberSlots(); }
     public Map<Integer, PlayerDatabaseHelper.PlayerRecord> playerRecords(Set<Integer> playerDbIds) { return PlayerDatabaseHelper.findPlayersByDbIds(plugin, playerDbIds); }
     public boolean sameFaction(int firstPlayerDbId, int secondPlayerDbId) {
@@ -142,10 +162,7 @@ public final class FactionService {
     public void reconcilePermissionGroup(Player player) {
         repository.factionFor(player.getDbID()).ifPresentOrElse(f -> {
             if (!f.groupName().equals(player.getPermissionGroup()) && permissionGroupAvailable(f.groupName())) permissions.assign(player, f.groupName());
-        }, () -> {
-            String defaultGroup = permissions.defaultGroupName();
-            if (!defaultGroup.equals(player.getPermissionGroup())) permissions.assignDefault(player);
-        });
+        }, () -> { /* Non-members may belong to another plugin's group; retain it. */ });
     }
     private void reconcilePermissionGroups() {
         for (Player player : Server.getAllPlayers()) if (player != null) reconcilePermissionGroup(player);
