@@ -1,0 +1,87 @@
+{
+  "tc": {
+    "cmd": {
+      "help": "Help:\nAvailable chat commands:\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD status\u003c/color\u003e shows plugin infos\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD open\u003c/color\u003e opens the plugin menu\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD help\u003c/color\u003e shows this help\n\n\u003ccolor\u003dyellow\u003eTip:\u003c/color\u003e Bind the command \u003ccolor\u003dred\u003e/PH_PLUGIN_CMD open\u003c/color\u003e to a mouse button or keyboard key.",
+      "status": "🔎 Plugin Status\n➡️ Plugin version: PH_VERSION\n➡️ Installed languages: PH_LANG_AVAILABLE\n➡️ Your language: PH_LANGUAGE\n➡️ Used language: PH_USEDLANG\n➡️ Translated by: Devidian"
+    },
+    "data": {
+      "desc": "Here you can view stored player data for PH_PLUGIN_NAME.",
+      "empty": "No stored player data is available for this plugin yet.",
+      "title": "Saved Data for PH_PLUGIN_NAME"
+    },
+    "err": {
+      "cmd": {
+        "unknown": "Unknown command. Type \u003ccolor\u003dred\u003e/PH_PLUGIN_CMD help\u003c/color\u003e for help."
+      }
+    },
+    "msg": {
+      "plugin": {
+        "welcome": "ℹ️ \u003ccolor\u003d#F00000\u003ePH_PLUGIN_NAME\u003c/color\u003e | \u003ccolor\u003d#F0F000\u003evPH_PLUGIN_VERSION\u003c/color\u003e | \u003ccolor\u003d#C0C0C0\u003e/PH_PLUGIN_CMD\u003c/color\u003e | loaded!"
+      }
+    },
+    "settings": {
+      "desc": "Here you can adjust the player-facing settings for PH_PLUGIN_NAME.",
+      "empty": "No player settings are available for PH_PLUGIN_NAME yet.",
+      "title": "Plugin Settings for PH_PLUGIN_NAME"
+    },
+    "setting": {
+      "enablewelcomemessage": {
+        "desc": "If true, this plugin sends a welcome message when a player joins.",
+        "label": "Welcome message"
+      },
+      "examplesecret": {
+        "desc": "Template example for a sensitive value. Replace or remove in real plugins.",
+        "label": "Example secret"
+      },
+      "examples": {
+        "desc": "Replace or remove template-only examples.",
+        "label": "Examples"
+      },
+      "logging": {
+        "desc": "Logging output and verbosity.",
+        "label": "Logging"
+      },
+      "loglevel": {
+        "desc": "Controls plugin logging verbosity.",
+        "label": "Log level"
+      },
+      "playermessages": {
+        "desc": "Messages sent directly to players by this plugin.",
+        "label": "Player messages"
+      },
+      "reloadonchange": {
+        "desc": "If true, this plugin reloads settings when settings.properties changes.",
+        "label": "Reload on change"
+      },
+      "runtime": {
+        "desc": "Runtime reload and maintenance behavior.",
+        "label": "Runtime"
+      },
+      "factions": { "label": "Factions", "desc": "Faction limits, prices and defaults." },
+      "defaultmemberlimit": { "label": "Default member limit", "desc": "Members available before extra slots." },
+      "foundationcost": { "label": "Foundation cost", "desc": "Cost for a new faction in the default currency." },
+      "memberslotbasecost": { "label": "Extra member slot cost", "desc": "Base price for one additional member slot." },
+      "memberslotincrease": { "label": "Member slot price increase", "desc": "Increase for every already purchased member slot." },
+      "defaultclaimlicenses": { "label": "Default Land Claim licenses", "desc": "Faction Land Claim licenses before extras." },
+      "defaulttraderlicenses": { "label": "Default trader licenses", "desc": "Faction trader licenses before extras." },
+      "defaultcrierlicenses": { "label": "Default crier licenses", "desc": "Faction crier licenses before extras." },
+      "defaultservicenpclicenses": { "label": "Default service NPC licenses", "desc": "Faction service NPC licenses before extras." },
+      "discord": { "label": "Discord", "desc": "Optional Discord Connect event channels." },
+      "discordlifecyclechannelid": { "label": "Faction lifecycle channel", "desc": "Creation and dissolution; zero disables it." },
+      "discordmembershipchannelid": { "label": "Faction membership channel", "desc": "Join, leave and removal; zero disables it." },
+      "discordextraschannelid": { "label": "Faction extras channel", "desc": "Extra-license purchases; zero disables it." }
+    },
+    "factions": {
+      "info": "\u003cb\u003ePH_PLUGIN_NAME\u003c/b\u003e\nVersion: PH_PLUGIN_VERSION\nCommand: /PH_PLUGIN_CMD\nCreate and manage your faction.",
+      "status": "\u003cb\u003eFaction settings\u003c/b\u003e\nDefault member limit: PH_MEMBER_LIMIT\nFoundation cost: PH_FOUNDATION_COST",
+      "ui": { "title": "My faction", "desc": "Create, join and manage player factions.", "legend": "Changes are confirmed before membership is changed.", "menu": { "my_faction": "My faction", "info_status": "Info / Status" }, "tab": { "list": "Factions", "applications": "Applications", "create": "Create faction", "members": "Members", "mine": "My faction" }, "empty": "No factions have been founded yet.", "members": "Members: PH_COUNT", "apply": "Apply", "apply_unavailable": "Application unavailable", "apply_title": "Apply to faction", "apply_confirm": "Apply to PH_NAME?", "applications_empty": "You have no applications.", "withdraw": "Withdraw", "applicant": "Applicant: PH_ID", "accept": "Accept", "accept_title": "Accept applicant", "accept_confirm": "Accept player PH_ID?", "reject": "Reject", "reject_title": "Reject applicant", "reject_confirm": "Reject player PH_ID?", "remove": "Remove", "remove_title": "Remove member", "remove_confirm": "Remove player PH_ID from the faction?", "promote": "Promote", "create_name": "Faction name", "create_color": "Faction color", "choose_color": "Choose color", "create_cost": "Foundation cost: PH_PRICE PH_CURRENCY.", "create_transfer": "After the faction is founded, this amount is transferred to the faction account.", "create_submit": "Create faction", "create_title": "Create faction", "create_confirm": "Create faction PH_NAME?", "mine_id": "Faction: PH_ID", "mine_role": "Role: PH_ROLE", "leave": "Leave faction", "leave_title": "Leave faction", "leave_confirm": "Do you really want to leave this faction?", "dissolve": "Dissolve faction", "dissolve_title": "Dissolve faction", "dissolve_confirm": "Do you really want to dissolve this faction? This cannot be undone.", "error_title": "Faction action failed" },
+      "table": { "th": { "name": "Faction", "members": "Members", "leader": "Leader", "action": "Action", "faction": "Faction", "status": "Status", "player": "Player", "last_seen": "Last seen", "joined": "Joined", "role": "Role" }, "member": "Member", "members_empty": "No members available.", "online": "Online", "unknown": "Unknown", "role": { "newcomer": "Newcomer", "member": "Member", "officer": "Officer", "leader": "Leader" }, "status": { "open": "Open", "rejected": "Rejected", "withdrawn": "Withdrawn" } },
+      "details": { "name": "Faction: PH_NAME", "color": "Color: PH_COLOR", "members": "Members: PH_COUNT / PH_LIMIT", "balance": "Balance:", "change_color": "Change faction color", "deposit": "Transfer money to faction account", "deposit_submit": "Deposit" },
+      "applicants": { "tab": "Faction applicants", "pending": "Application pending", "empty": "There are no open applications." },
+      "members": { "demote": "Demote", "transfer_leadership": "Leadership", "transfer_leadership_title": "Transfer faction leadership", "transfer_leadership_confirm": "Do you really want to appoint PH_PLAYER as the new leader? You will become an officer afterwards.", "action": { "promote": "↑", "demote": "↓", "transfer_leadership": "★", "remove": "×" }, "legend": { "leader": "Member actions: ↑ promote rank · ↓ demote officer · ★ transfer leadership · × remove", "officer": "Member actions: ↑ promote newcomer to member · × remove" } },
+      "debug": { "admin_only": "This debug command is available to server administrators only.", "groups": "Current permission group: PH_CURRENT\nLoaded permission groups: PH_GROUPS", "none": "none" },
+      "error": { "member_cannot_apply": "Faction members cannot apply to another faction.", "faction_not_found": "This faction does not exist.", "application_already_open": "You already have an open application to a faction.", "application_remove_before_reapply": "Remove your previous application to this faction first.", "transfer_leadership_before_leaving": "Transfer leadership before leaving the faction.", "only_leader_change_color": "Only the faction leader can change the faction color.", "invalid_color": "Faction color must consist of six hexadecimal characters.", "name_required": "A faction name is required.", "name_length": "Faction names must contain 3 to 20 characters.", "name_starts_dot": "Faction names must not start with a dot.", "name_characters": "Faction names may use letters, numbers, spaces and a numeric dot only.", "name_dot": "A dot is allowed only once after a number.", "already_member": "You already belong to a faction.", "name_taken": "This faction name is already in use.", "wallet_account_api_unavailable": "The faction account cannot be set up at the moment.", "account_create_failed": "The faction account could not be created. Please try again.", "foundation_payment_failed": "The foundation cost could not be collected.", "create_failed": "The faction could not be created. Please try again later.", "world_account_unavailable": "The world account is currently unavailable. The faction remains intact.", "dissolution_transfer_failed": "The faction balance could not be transferred completely to the world account. The faction remains intact." },
+      "discord": { "founded": "Player PH_PLAYER founded faction PH_FACTION.", "dissolved": "Player PH_PLAYER dissolved faction PH_FACTION.", "joined": "Player PH_PLAYER joined faction PH_FACTION.", "left": "Player PH_PLAYER left faction PH_FACTION.", "removed": "Player PH_PLAYER was removed from faction PH_FACTION." }
+    }
+  }
+}

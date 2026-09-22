@@ -1,0 +1,13 @@
+{
+  "defaultMemberLimit": 10,
+  "foundationCost": 5000,
+  "memberSlotBaseCost": 1000,
+  "memberSlotIncrease": 0.1,
+  "defaultClaimLicenses": 1,
+  "defaultTraderLicenses": 0,
+  "defaultCrierLicenses": 1,
+  "defaultServiceNpcLicenses": 2,
+  "discordLifecycleChannelId": 0,
+  "discordMembershipChannelId": 0,
+  "discordExtrasChannelId": 0
+}

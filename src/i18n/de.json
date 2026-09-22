@@ -1,0 +1,87 @@
+{
+  "tc": {
+    "cmd": {
+      "help": "Hilfe:\nVerfügbare Chat-Kommandos:\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD status\u003c/color\u003e zeigt plugin infos an\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD open\u003c/color\u003e öffnet das Pluginmenü\n\u003ccolor\u003dred\u003e/PH_PLUGIN_CMD help\u003c/color\u003e zeigt diese Hilfe an\n\n\u003ccolor\u003dyellow\u003eTipp:\u003c/color\u003e Binde den Befehl \u003ccolor\u003dred\u003e/PH_PLUGIN_CMD open\u003c/color\u003e an eine Taste der Maus oder Tastatur.",
+      "status": "🔎 Plugin Status\n➡️ Plugin version: PH_VERSION\n➡️ Installierte Sprachen: PH_LANG_AVAILABLE\n➡️ Deine Sprache: PH_LANGUAGE\n➡️ Verwendete Sprache: PH_USEDLANG"
+    },
+    "data": {
+      "desc": "Hier kannst du gespeicherte Spielerdaten für PH_PLUGIN_NAME ansehen.",
+      "empty": "Für dieses Plugin sind noch keine gespeicherten Spielerdaten verfügbar.",
+      "title": "Gespeicherte Daten für PH_PLUGIN_NAME"
+    },
+    "err": {
+      "cmd": {
+        "unknown": "Unbekanntes Kommando tippe \u003ccolor\u003dred\u003e/PH_PLUGIN_CMD help\u003c/color\u003e für Hilfe."
+      }
+    },
+    "msg": {
+      "plugin": {
+        "welcome": "ℹ️ \u003ccolor\u003d#F00000\u003ePH_PLUGIN_NAME\u003c/color\u003e | \u003ccolor\u003d#F0F000\u003evPH_PLUGIN_VERSION\u003c/color\u003e | \u003ccolor\u003d#C0C0C0\u003e/PH_PLUGIN_CMD\u003c/color\u003e | geladen!"
+      }
+    },
+    "settings": {
+      "desc": "Hier kannst du spielerbezogene Einstellungen für PH_PLUGIN_NAME anpassen.",
+      "empty": "Für PH_PLUGIN_NAME sind noch keine Spieler-Einstellungen verfügbar.",
+      "title": "Plugin Einstellungen für PH_PLUGIN_NAME"
+    },
+    "setting": {
+      "enablewelcomemessage": {
+        "desc": "Wenn aktiv, sendet dieses Plugin eine Willkommensnachricht, wenn ein Spieler beitritt.",
+        "label": "Willkommensnachricht"
+      },
+      "examplesecret": {
+        "desc": "Template-Beispiel für einen sensiblen Wert. In echten Plugins ersetzen oder entfernen.",
+        "label": "Beispiel-Secret"
+      },
+      "examples": {
+        "desc": "Template-Beispiele ersetzen oder entfernen.",
+        "label": "Beispiele"
+      },
+      "logging": {
+        "desc": "Logging-Ausgabe und Detailgrad.",
+        "label": "Protokollierung"
+      },
+      "loglevel": {
+        "desc": "Steuert die Logging-Ausgabe des Plugins.",
+        "label": "Log-Level"
+      },
+      "playermessages": {
+        "desc": "Nachrichten, die dieses Plugin direkt an Spieler sendet.",
+        "label": "Spielernachrichten"
+      },
+      "reloadonchange": {
+        "desc": "Wenn aktiv, lädt dieses Plugin Einstellungen neu, wenn settings.properties geändert wird.",
+        "label": "Bei Änderung neu laden"
+      },
+      "runtime": {
+        "desc": "Reload- und Wartungsverhalten zur Laufzeit.",
+        "label": "Laufzeit"
+      },
+      "factions": { "label": "Fraktionen", "desc": "Fraktionslimits, Kosten und Standardwerte." },
+      "defaultmemberlimit": { "label": "Standard-Mitgliederlimit", "desc": "Mitglieder vor zusätzlich erworbenen Plätzen." },
+      "foundationcost": { "label": "Gründungskosten", "desc": "Kosten für eine neue Fraktion in der Standardwährung." },
+      "memberslotbasecost": { "label": "Kosten zusätzlicher Mitgliederplätze", "desc": "Grundpreis für einen zusätzlichen Mitgliederplatz." },
+      "memberslotincrease": { "label": "Preissteigerung Mitgliederplätze", "desc": "Steigerung je bereits erworbenem Mitgliederplatz." },
+      "defaultclaimlicenses": { "label": "Standard-LandClaim-Lizenzen", "desc": "Fraktions-LandClaim-Lizenzen vor Extras." },
+      "defaulttraderlicenses": { "label": "Standard-Trader-Lizenzen", "desc": "Fraktions-Trader-Lizenzen vor Extras." },
+      "defaultcrierlicenses": { "label": "Standard-Marktschreier-Lizenzen", "desc": "Fraktions-Marktschreier-Lizenzen vor Extras." },
+      "defaultservicenpclicenses": { "label": "Standard-Service-NPC-Lizenzen", "desc": "Fraktions-Service-NPC-Lizenzen vor Extras." },
+      "discord": { "label": "Discord", "desc": "Optionale Discord-Connect-Ereigniskanäle." },
+      "discordlifecyclechannelid": { "label": "Fraktions-Lebenszykluskanal", "desc": "Gründung und Auflösung; 0 deaktiviert den Kanal." },
+      "discordmembershipchannelid": { "label": "Fraktions-Mitgliederkanal", "desc": "Beitritt, Austritt und Ausschluss; 0 deaktiviert den Kanal." },
+      "discordextraschannelid": { "label": "Fraktions-Extras-Kanal", "desc": "Käufe zusätzlicher Lizenzen; 0 deaktiviert den Kanal." }
+    },
+    "factions": {
+      "info": "\u003cb\u003ePH_PLUGIN_NAME\u003c/b\u003e\nVersion: PH_PLUGIN_VERSION\nBefehl: /PH_PLUGIN_CMD\nGründe und verwalte deine Fraktion.",
+      "status": "\u003cb\u003eFraktionseinstellungen\u003c/b\u003e\nStandard-Mitgliederlimit: PH_MEMBER_LIMIT\nGründungskosten: PH_FOUNDATION_COST",
+      "ui": { "title": "Meine Fraktion", "desc": "Gründe, tritt bei und verwalte Spielerfraktionen.", "legend": "Änderungen werden vor der Mitgliedschaftsänderung bestätigt.", "menu": { "my_faction": "Meine Fraktion", "info_status": "Info / Status" }, "tab": { "list": "Fraktionen", "applications": "Bewerbungen", "create": "Fraktion gründen", "members": "Mitglieder", "mine": "Meine Fraktion" }, "empty": "Es wurden noch keine Fraktionen gegründet.", "members": "Mitglieder: PH_COUNT", "apply": "Bewerben", "apply_unavailable": "Bewerben nicht möglich", "apply_title": "Bei Fraktion bewerben", "apply_confirm": "Bei PH_NAME bewerben?", "applications_empty": "Du hast keine Bewerbungen.", "withdraw": "Zurückziehen", "applicant": "Bewerber: PH_ID", "accept": "Annehmen", "accept_title": "Bewerber annehmen", "accept_confirm": "Spieler PH_ID annehmen?", "reject": "Ablehnen", "reject_title": "Bewerber ablehnen", "reject_confirm": "Spieler PH_ID ablehnen?", "remove": "Entfernen", "remove_title": "Mitglied entfernen", "remove_confirm": "Spieler PH_ID aus der Fraktion entfernen?", "promote": "Befördern", "create_name": "Fraktionsname", "create_color": "Fraktionsfarbe", "choose_color": "Farbe auswählen", "create_cost": "Gründungskosten: PH_PRICE PH_CURRENCY.", "create_transfer": "Nach erfolgreicher Gründung wird dieser Betrag auf das Fraktionskonto übertragen.", "create_submit": "Fraktion gründen", "create_title": "Fraktion gründen", "create_confirm": "Fraktion PH_NAME gründen?", "mine_id": "Fraktion: PH_ID", "mine_role": "Rang: PH_ROLE", "leave": "Fraktion verlassen", "leave_title": "Fraktion verlassen", "leave_confirm": "Möchtest du diese Fraktion wirklich verlassen?", "dissolve": "Fraktion auflösen", "dissolve_title": "Fraktion auflösen", "dissolve_confirm": "Möchtest du diese Fraktion wirklich auflösen? Dies kann nicht rückgängig gemacht werden.", "error_title": "Fraktionsaktion fehlgeschlagen" },
+      "table": { "th": { "name": "Fraktion", "members": "Mitglieder", "leader": "Anführer", "action": "Aktion", "faction": "Fraktion", "status": "Status", "player": "Spieler", "last_seen": "Letzte Anwesenheit", "joined": "Beigetreten", "role": "Rang" }, "member": "Mitglied", "members_empty": "Keine Mitglieder vorhanden.", "online": "Online", "unknown": "Unbekannt", "role": { "newcomer": "Neuling", "member": "Mitglied", "officer": "Offizier", "leader": "Anführer" }, "status": { "open": "Offen", "rejected": "Abgelehnt", "withdrawn": "Zurückgezogen" } },
+      "details": { "name": "Fraktion: PH_NAME", "color": "Farbe: PH_COLOR", "members": "Mitglieder: PH_COUNT / PH_LIMIT", "balance": "Kontostand:", "change_color": "Fraktionsfarbe ändern", "deposit": "Geld auf Fraktionskonto einzahlen", "deposit_submit": "Einzahlen" },
+      "applicants": { "tab": "Fraktionsbewerber", "pending": "Bewerbung läuft", "empty": "Es liegen keine offenen Bewerbungen vor." },
+      "members": { "demote": "Degradieren", "transfer_leadership": "Führung", "transfer_leadership_title": "Fraktionsführung übertragen", "transfer_leadership_confirm": "Möchtest du PH_PLAYER wirklich zum neuen Anführer ernennen? Du wirst danach Offizier.", "action": { "promote": "↑", "demote": "↓", "transfer_leadership": "★", "remove": "×" }, "legend": { "leader": "Mitgliederaktionen: ↑ Rang erhöhen · ↓ Offizier degradieren · ★ Führung übertragen · × entfernen", "officer": "Mitgliederaktionen: ↑ Neuling zum Mitglied befördern · × entfernen" } },
+      "debug": { "admin_only": "Dieser Debug-Befehl ist nur für Server-Administratoren verfügbar.", "groups": "Aktuelle Permission-Gruppe: PH_CURRENT\nGeladene Permission-Gruppen: PH_GROUPS", "none": "keine" },
+      "error": { "member_cannot_apply": "Fraktionsmitglieder können sich nicht bei einer anderen Fraktion bewerben.", "faction_not_found": "Diese Fraktion existiert nicht.", "application_already_open": "Du hast bereits eine offene Bewerbung bei einer Fraktion.", "application_remove_before_reapply": "Entferne zuerst deine frühere Bewerbung bei dieser Fraktion.", "transfer_leadership_before_leaving": "Übertrage zuerst die Führung, bevor du die Fraktion verlassen kannst.", "only_leader_change_color": "Nur der Anführer kann die Fraktionsfarbe ändern.", "invalid_color": "Die Fraktionsfarbe muss aus sechs Hexadezimalzeichen bestehen.", "name_required": "Ein Fraktionsname ist erforderlich.", "name_length": "Fraktionsnamen müssen zwischen 3 und 20 Zeichen lang sein.", "name_starts_dot": "Fraktionsnamen dürfen nicht mit einem Punkt beginnen.", "name_characters": "Fraktionsnamen dürfen nur Buchstaben, Zahlen, Leerzeichen und einen Punkt nach einer Zahl enthalten.", "name_dot": "Ein Punkt ist nur einmal und nur nach einer Zahl erlaubt.", "already_member": "Du gehörst bereits einer Fraktion an.", "name_taken": "Dieser Fraktionsname wird bereits verwendet.", "wallet_account_api_unavailable": "Das Fraktionskonto kann derzeit nicht eingerichtet werden.", "account_create_failed": "Das Fraktionskonto konnte nicht eingerichtet werden. Bitte versuche es erneut.", "foundation_payment_failed": "Die Gründungskosten konnten nicht eingezogen werden.", "create_failed": "Die Fraktion konnte nicht gegründet werden. Bitte versuche es später erneut.", "world_account_unavailable": "Das Weltkonto ist derzeit nicht verfügbar. Die Fraktion bleibt erhalten.", "dissolution_transfer_failed": "Das Fraktionsguthaben konnte nicht vollständig auf das Weltkonto übertragen werden. Die Fraktion bleibt erhalten." },
+      "discord": { "founded": "Spieler PH_PLAYER hat die Fraktion PH_FACTION gegründet.", "dissolved": "Spieler PH_PLAYER hat die Fraktion PH_FACTION aufgelöst.", "joined": "Spieler PH_PLAYER ist der Fraktion PH_FACTION beigetreten.", "left": "Spieler PH_PLAYER hat die Fraktion PH_FACTION verlassen.", "removed": "Spieler PH_PLAYER wurde aus der Fraktion PH_FACTION entfernt." }
+    }
+  }
+}
