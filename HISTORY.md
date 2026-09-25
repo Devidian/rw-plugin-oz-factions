@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.2.1] - 2026-09-25 | Shop extra icons
+
 - fix: include all five Shop extra icons in the plugin JAR for both modern and classic styles.
 
 ## [0.2.0] - 2026-09-22 | Shop extras
