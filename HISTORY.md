@@ -1,5 +1,9 @@
 # History
 
+## Unreleased
+
+- fix: include all five Shop extra icons in the plugin JAR for both modern and classic styles.
+
 ## [0.2.0] - 2026-09-22 | Shop extras
 
 - feat: register five leader-only faction extras with compatible OZ - Shop

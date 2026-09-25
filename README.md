@@ -23,6 +23,8 @@ When a compatible OZ - Shop is already loaded, its plugin-offers tab contains
 five leader-only faction extras. They debit the faction account in Wallet's
 default currency and credit the world account; duplicate callback delivery is
 deduplicated by the durable Shop correlation ID.
+The ten modern/classic extra icons are packaged in the plugin JAR because the
+runtime asset loader reads plugin resources from that JAR.
 
 ## Runtime behavior
 
