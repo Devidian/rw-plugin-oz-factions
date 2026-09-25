@@ -263,6 +263,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
+      - name: Checkout release notes
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: release-notes
+
       - name: Download build artifacts
         uses: actions/download-artifact@v6
         with:
