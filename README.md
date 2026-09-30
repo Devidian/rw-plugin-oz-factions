@@ -1,5 +1,7 @@
 # OZ - Factions
 
+Players can hide the Factions shortcut in the plugin settings. It remains visible by default.
+
 OZ - Factions lets players found and manage one faction each. It owns
 faction membership, applications, faction permission groups, faction accounts
 and same-faction PvP protection.

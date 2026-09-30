@@ -8,7 +8,7 @@
 
     <groupId>com.github.devidian</groupId>
     <artifactId>rw-plugin-oz-player-factions</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
 
     <name>OZPlayerFactions</name>
     <description>Player-created factions, membership and shared faction integration.</description>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.github.devidian</groupId>
             <artifactId>rw-plugin-oz-tools</artifactId>
-            <version>0.25.0</version>
+            <version>0.27.0</version>
         </dependency>
 
         <!-- Rising World PluginAPI -->

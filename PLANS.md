@@ -1,5 +1,7 @@
 # PLANS.md
 
+- [ ] Validate the next-300926 change on Development with a controlled player check.
+
 Planning is stored in repository-local docs.
 
 Current Development test work: [docs/active/next-250926b-icons.md](docs/active/next-250926b-icons.md).

@@ -1,17 +1,25 @@
 package de.omegazirkel.risingworld.playerfactions.ui;
 
+import de.omegazirkel.risingworld.OZTools;
+import de.omegazirkel.risingworld.tools.I18n;
 import de.omegazirkel.risingworld.tools.ui.BasePlayerPluginSettingsPanel;
+import de.omegazirkel.risingworld.tools.ui.InventoryOverlayPanel;
+import de.omegazirkel.risingworld.tools.ui.OZUIElement;
 import de.omegazirkel.risingworld.tools.ui.PlayerPluginSettings;
+import de.omegazirkel.risingworld.tools.ui.PluginShortcutVisibility;
 import net.risingworld.api.objects.Player;
-import net.risingworld.api.ui.UILabel;
-
-/* This is an example, rename <Template> if you use this feature */
 
 public class FactionPlayerPluginSettings extends PlayerPluginSettings {
 
     public FactionPlayerPluginSettings(String pluginLabel, String pluginVersion) {
         this.pluginLabel = pluginLabel;
         this.pluginVersion = pluginVersion;
+    }
+
+    public boolean shortcutVisible(Player player) {
+        return player == null || OZTools.playerSettings() == null
+                || OZTools.playerSettings().getBoolean(player.getDbID(),
+                        PluginShortcutVisibility.playerSettingKey(pluginLabel)).orElse(true);
     }
 
     @Override
@@ -21,9 +29,18 @@ public class FactionPlayerPluginSettings extends PlayerPluginSettings {
             @Override
             protected void redrawContent() {
                 flexWrapper.removeAllChilds();
-                // TODO: implement actual settings content for PlayerFactions plugin
-                UILabel placeholderLabel = new UILabel("PlayerFactions plugin settings will be here.");
-                flexWrapper.addChild(placeholderLabel);
+                OZUIElement setting = defaultSettingsContainer();
+                setting.addChild(defaultSettingsLabel(I18n.getInstance(pluginLabel)
+                        .get("tc.shortcut.visible", uiPlayer)));
+                setting.addChild(switchButtons(uiPlayer, shortcutVisible(uiPlayer), event -> {
+                    if (OZTools.playerSettings() != null) {
+                        OZTools.playerSettings().setBoolean(uiPlayer.getDbID(),
+                                PluginShortcutVisibility.playerSettingKey(pluginLabel), !shortcutVisible(uiPlayer));
+                    }
+                    InventoryOverlayPanel.refreshAllVisible();
+                    redrawContent();
+                }));
+                flexWrapper.addChild(setting);
             }
 
         };
