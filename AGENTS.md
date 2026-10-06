@@ -17,7 +17,7 @@ Does not own:
 - Wallet balance persistence or Shop purchase orchestration
 
 ## Mandatory Workflow Rules
-- Preserve the Java 20 baseline.
+- Preserve the Java 25 baseline.
 - Preserve Maven-based build and packaging behavior.
 - Preserve GitHub tag-release compatibility.
 - Keep generated plugin repositories autonomous.

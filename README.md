@@ -1,5 +1,7 @@
 # OZ - Factions
 
+**Build baseline:** JDK 25 (`--release 25`) and the bundled Rising World PluginAPI 0.9.3.2 JAR.
+
 Players can hide the Factions shortcut in the plugin settings. It remains visible by default.
 
 OZ - Factions lets players found and manage one faction each. It owns
