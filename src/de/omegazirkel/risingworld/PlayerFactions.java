@@ -46,5 +46,5 @@ public final class PlayerFactions extends Plugin implements Listener, FileChange
     public boolean canPlayerFactionManageClaim(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
     public boolean canPlayerFactionManageTrader(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
     public boolean canPlayerFactionManageCrier(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
-    public boolean canPlayerFactionManageServiceNPC(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
+    public boolean canPlayerFactionManageServiceNPC(int playerDbId) { return runtime != null && runtime.service().canManageApplications(playerDbId); }
 }

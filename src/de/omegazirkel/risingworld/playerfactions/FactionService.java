@@ -206,6 +206,19 @@ public final class FactionService {
     public void dissolve(Player leader) {
         Faction faction=repository.factionFor(leader.getDbID()).orElseThrow(() -> new IllegalStateException("Not in a faction."));
         if(faction.leaderDbId()!=leader.getDbID()) throw new IllegalStateException("Only the faction leader can dissolve it.");
+        Plugin serviceNpc = plugin.getPluginByName("OZ - Service NPC");
+        if (serviceNpc != null) {
+            try {
+                Object count = serviceNpc.getClass().getMethod("getFactionServiceNpcCount", int.class)
+                        .invoke(serviceNpc, faction.id());
+                if (!(count instanceof Number value) || value.intValue() != 0)
+                    throw new IllegalStateException("tc.factions.error.service_npcs_active");
+            } catch (NoSuchMethodException ex) {
+                // Older Service NPC releases have no faction-owned NPCs.
+            } catch (ReflectiveOperationException ex) {
+                throw new IllegalStateException("tc.factions.error.service_npcs_active", ex);
+            }
+        }
         List<WalletBridge.SystemBalanceInfo> balances = wallet.systemAccountBalances(faction.accountId());
         boolean hasPositiveBalance = balances.stream().anyMatch(balance -> balance.balance() > 0);
         String world=wallet.worldSystemAccountId();

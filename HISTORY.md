@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.4.0] - 2026-10-13 | Faction service NPC ownership
+
+- feat: allow faction officers to manage faction service NPCs and block faction dissolution while owned NPCs remain.
+
 ## [0.3.0] - 2026-09-30 | Player shortcut visibility
 
 - change: add a per-player Factions shortcut visibility setting.

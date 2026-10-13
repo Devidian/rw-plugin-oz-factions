@@ -8,6 +8,8 @@ OZ - Factions lets players found and manage one faction each. It owns
 faction membership, applications, faction permission groups, faction accounts
 and same-faction PvP protection.
 
+Faction leaders and officers may manage faction Service NPCs within their purchased license count. A faction with existing Service NPCs cannot be dissolved until those NPCs are removed.
+
 ## Dependencies
 
 - Required: `OZ - Tools`
