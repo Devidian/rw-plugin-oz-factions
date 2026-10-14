@@ -1,2 +1,0 @@
-- feat: allow leaders and officers to manage faction traders and criers within capacity; block faction dissolution while owned NPCs remain.
-- feat: add idempotent faction trader account payouts and reversals.

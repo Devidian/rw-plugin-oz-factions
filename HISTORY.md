@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.5.0] - 2026-10-14 | Faction trader and crier ownership
+
 - feat: allow leaders and officers to manage faction traders and market criers; block dissolution while either remains.
 - feat: expose a Shop-reservation-checked, idempotent faction trader payout and reversal facade.
 
