@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- feat: allow leaders and officers to manage faction traders and market criers; block dissolution while either remains.
+- feat: expose a Shop-reservation-checked, idempotent faction trader payout and reversal facade.
+
 ## [0.4.0] - 2026-10-13 | Faction service NPC ownership
 
 - feat: allow faction officers to manage faction service NPCs and block faction dissolution while owned NPCs remain.

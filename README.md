@@ -8,7 +8,7 @@ OZ - Factions lets players found and manage one faction each. It owns
 faction membership, applications, faction permission groups, faction accounts
 and same-faction PvP protection.
 
-Faction leaders and officers may manage faction Service NPCs within their purchased license count. A faction with existing Service NPCs cannot be dissolved until those NPCs are removed.
+Faction leaders and officers may manage faction Service NPCs, market criers, and traders within their respective purchased license counts. A faction with any of these NPCs cannot be dissolved until they are removed.
 
 ## Dependencies
 
@@ -16,8 +16,9 @@ Faction leaders and officers may manage faction Service NPCs within their purcha
 - Optional: `OZ - Wallet` for founding costs and faction accounts
 - Optional: `OZ - Discord Connect` for configured event messages
 
-Land Claims, Traders, Criers and Service NPCs remain their own plugins. They
-consume the public faction facade in later, separately released integrations.
+Land Claims, Traders, Criers and Service NPCs remain their own plugins. Their
+optional integrations consume the public faction facade. Shop trader payouts
+must use the idempotent Factions facade and a matching active Shop reservation.
 
 ## Configuration
 

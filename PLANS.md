@@ -7,6 +7,7 @@ Planning is stored in repository-local docs.
 Current Development test work: [docs/active/next-250926b-icons.md](docs/active/next-250926b-icons.md).
 
 - Active implementation tasks: [docs/active/](docs/active/)
+- Faction NPC accounts: [docs/active/faction-npc-accounts.md](docs/active/faction-npc-accounts.md)
 - Roadmaps and larger plans: [docs/roadmaps/](docs/roadmaps/)
 - Completed phase summaries: [docs/phase-archive.md](docs/phase-archive.md)
 - Planning and documentation standards: [docs/policies/repository-policy.md](docs/policies/repository-policy.md)

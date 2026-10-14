@@ -51,6 +51,36 @@ public final class FactionService {
     public boolean isLeader(int playerDbId) { return repository.member(playerDbId).map(m -> m.role() == FactionRole.LEADER).orElse(false); }
     public boolean canManageApplications(int playerDbId) { return repository.member(playerDbId).map(member -> member.role().canManageApplications()).orElse(false); }
     public boolean canManageMembers(int playerDbId) { return repository.member(playerDbId).map(member -> member.role().canManageMembers()).orElse(false); }
+    /** Shop-only payout boundary: the account always comes from the persisted faction, never the caller. */
+    public boolean payTraderSeller(int factionId, int playerDbId, long amount, String currency, String correlationId) {
+        if (factionId <= 0 || playerDbId <= 0 || amount <= 0 || currency == null || currency.isBlank()
+                || correlationId == null || !correlationId.startsWith("shop:faction-trader:")) return false;
+        Plugin shop = plugin.getPluginByName("OZ - Shop");
+        if (shop == null) return false;
+        try {
+            Object authorized = shop.getClass().getMethod("isFactionTraderPaymentReserved",
+                    String.class, int.class, int.class, long.class, String.class)
+                    .invoke(shop, correlationId, factionId, playerDbId, amount, currency);
+            if (!Boolean.TRUE.equals(authorized)) return false;
+        } catch (ReflectiveOperationException ex) { return false; }
+        String accountId = accountIdForFaction(factionId);
+        return accountId != null && !accountId.isBlank() && wallet.hasSystemAccountApi()
+                && wallet.transferSystemToPlayerIdempotent(accountId, playerDbId, amount,
+                        "Faction trader purchase", currency, "OZPlayerFactions", correlationId).success();
+    }
+    public boolean reverseTraderPayment(int factionId, String correlationId) {
+        if (factionId <= 0 || accountIdForFaction(factionId) == null || correlationId == null
+                || !correlationId.startsWith("shop:faction-trader:")) return false;
+        Plugin shop = plugin.getPluginByName("OZ - Shop");
+        if (shop == null) return false;
+        try {
+            Object authorized = shop.getClass().getMethod("isFactionTraderPaymentReversalAllowed",
+                    String.class, int.class).invoke(shop, correlationId, factionId);
+            if (!Boolean.TRUE.equals(authorized)) return false;
+        } catch (ReflectiveOperationException ex) { return false; }
+        return wallet.reverseAccountTransferIdempotent(correlationId, correlationId + ":reversal",
+                "Faction trader purchase rollback", "OZPlayerFactions").success();
+    }
     public String factionName(int factionId) { return repository.faction(factionId).map(Faction::name).orElse(null); }
     public long foundationCost() { return settings.foundationCost; }
     public String currencyIdentifier() { return wallet.defaultCurrencyIdentifier(); }
@@ -206,6 +236,8 @@ public final class FactionService {
     public void dissolve(Player leader) {
         Faction faction=repository.factionFor(leader.getDbID()).orElseThrow(() -> new IllegalStateException("Not in a faction."));
         if(faction.leaderDbId()!=leader.getDbID()) throw new IllegalStateException("Only the faction leader can dissolve it.");
+        requireNoFactionNpc(faction.id(), "OZ - Shop", "getFactionTraderCount", "Faction traders are still active.");
+        requireNoFactionNpc(faction.id(), "OZ - Marketplace", "getFactionMarketCrierCount", "Faction market criers are still active.");
         Plugin serviceNpc = plugin.getPluginByName("OZ - Service NPC");
         if (serviceNpc != null) {
             try {
@@ -232,6 +264,16 @@ public final class FactionService {
         try { permissions.remove(faction.groupName()); } catch(Exception ex) { throw new IllegalStateException("Could not remove faction permission group",ex); }
         repository.deleteFaction(faction.id()); discord.dissolved(leader.getName(),faction.name());
         wallet.archiveSystemAccount(faction.accountId(),"OZPlayerFactions");
+    }
+    private void requireNoFactionNpc(int factionId, String pluginName, String method, String message) {
+        Plugin dependency = plugin.getPluginByName(pluginName);
+        if (dependency == null) return;
+        try {
+            Object count = dependency.getClass().getMethod(method, int.class).invoke(dependency, factionId);
+            if (!(count instanceof Number value) || value.intValue() != 0) throw new IllegalStateException(message);
+        } catch (ReflectiveOperationException ex) {
+            throw new IllegalStateException("Cannot verify faction NPCs in " + pluginName + ".", ex);
+        }
     }
     public record FactionAccountBalance(String currencyIdentifier, String currencyName, long balance) { }
     private void requireManager(int actorDbId,int factionId){FactionMember member=repository.member(actorDbId).orElseThrow(() -> new IllegalStateException("Not a faction member."));if(member.factionId()!=factionId||!member.role().canManageApplications())throw new IllegalStateException("Faction role is not allowed.");}

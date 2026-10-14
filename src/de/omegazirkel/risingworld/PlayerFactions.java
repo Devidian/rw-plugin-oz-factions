@@ -44,7 +44,13 @@ public final class PlayerFactions extends Plugin implements Listener, FileChange
     public boolean isPlayerFactionLeader(int playerDbId) { return runtime != null && runtime.service().isLeader(playerDbId); }
     public boolean canPlayerFactionLeader(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
     public boolean canPlayerFactionManageClaim(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
-    public boolean canPlayerFactionManageTrader(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
-    public boolean canPlayerFactionManageCrier(int playerDbId) { return isPlayerFactionLeader(playerDbId); }
+    public boolean canPlayerFactionManageTrader(int playerDbId) { return runtime != null && runtime.service().canManageApplications(playerDbId); }
+    public boolean canPlayerFactionManageCrier(int playerDbId) { return runtime != null && runtime.service().canManageApplications(playerDbId); }
+    public boolean payFactionTraderSeller(int factionId, int playerDbId, long amount, String currency, String correlationId) {
+        return runtime != null && runtime.service().payTraderSeller(factionId, playerDbId, amount, currency, correlationId);
+    }
+    public boolean reverseFactionTraderPayment(int factionId, String correlationId) {
+        return runtime != null && runtime.service().reverseTraderPayment(factionId, correlationId);
+    }
     public boolean canPlayerFactionManageServiceNPC(int playerDbId) { return runtime != null && runtime.service().canManageApplications(playerDbId); }
 }
