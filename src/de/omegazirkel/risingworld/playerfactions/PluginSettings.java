@@ -27,6 +27,7 @@ public final class PluginSettings {
     public double claimLicenseIncrease = .1d, traderLicenseIncrease = .1d, crierLicenseIncrease = .1d, serviceNpcLicenseIncrease = .1d;
     public int defaultClaimLicenses = 1, defaultTraderLicenses = 0, defaultCrierLicenses = 1, defaultServiceNpcLicenses = 2;
     public long discordLifecycleChannelId, discordMembershipChannelId, discordExtrasChannelId;
+    public String discordLifecycleThreadTopic = "", discordMembershipThreadTopic = "", discordExtrasThreadTopic = "";
     private Path settingsFile;
     private Map<String, String> current = Map.of(), defaults = Map.of();
     public static PluginSettings getInstance(PlayerFactions value) { plugin = value; return getInstance(); }
@@ -47,6 +48,9 @@ public final class PluginSettings {
             defaultClaimLicenses = integer("defaultClaimLicenses", 1); defaultTraderLicenses = integer("defaultTraderLicenses", 0);
             defaultCrierLicenses = integer("defaultCrierLicenses", 1); defaultServiceNpcLicenses = integer("defaultServiceNpcLicenses", 2);
             discordLifecycleChannelId = positiveLong("discordLifecycleChannelId", 0L); discordMembershipChannelId = positiveLong("discordMembershipChannelId", 0L); discordExtrasChannelId = positiveLong("discordExtrasChannelId", 0L);
+            discordLifecycleThreadTopic = current.getOrDefault("discordLifecycleThreadTopic", defaults.getOrDefault("discordLifecycleThreadTopic", ""));
+            discordMembershipThreadTopic = current.getOrDefault("discordMembershipThreadTopic", defaults.getOrDefault("discordMembershipThreadTopic", ""));
+            discordExtrasThreadTopic = current.getOrDefault("discordExtrasThreadTopic", defaults.getOrDefault("discordExtrasThreadTopic", ""));
         } catch (IOException | NumberFormatException ex) { throw new IllegalStateException("Cannot load faction settings", ex); }
     }
     public long memberSlotCost(int alreadyPurchased) { return Math.round(memberSlotBaseCost + (memberSlotBaseCost * memberSlotIncrease) * Math.max(0, alreadyPurchased)); }
@@ -68,7 +72,10 @@ public final class PluginSettings {
             AdminSettingsEntry.group("discord", "Discord", "Optional Discord Connect event channels."),
             entry("discordLifecycleChannelId", "Faction lifecycle channel", "Creation and dissolution events; zero disables it.", AdminSettingsType.STRING),
             entry("discordMembershipChannelId", "Faction membership channel", "Join, leave and removal events; zero disables it.", AdminSettingsType.STRING),
-            entry("discordExtrasChannelId", "Faction extras channel", "Extra-license purchase events; zero disables it.", AdminSettingsType.STRING)); }
+            entry("discordExtrasChannelId", "Faction extras channel", "Extra-license purchase events; zero disables it.", AdminSettingsType.STRING),
+            entry("discordLifecycleThreadTopic", "Faction lifecycle thread", "Blank uses the plugin display name.", AdminSettingsType.STRING),
+            entry("discordMembershipThreadTopic", "Faction membership thread", "Blank uses the plugin display name.", AdminSettingsType.STRING),
+            entry("discordExtrasThreadTopic", "Faction extras thread", "Blank uses the plugin display name.", AdminSettingsType.STRING)); }
     private AdminSettingsEntry entry(String key, String label, String description, AdminSettingsType type) { return new AdminSettingsEntry(key, label, description, current.getOrDefault(key, defaults.getOrDefault(key, "")), defaults.getOrDefault(key, ""), type, false, value -> SettingsFileEditor.writeValue(settingsFile, key, value)); }
     private int integer(String key, int fallback) { return Integer.parseInt(current.getOrDefault(key, defaults.getOrDefault(key, Integer.toString(fallback)))); }
     private long positiveLong(String key, long fallback) { return Math.max(0L, Long.parseLong(current.getOrDefault(key, defaults.getOrDefault(key, Long.toString(fallback))))); }

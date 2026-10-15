@@ -17,5 +17,8 @@
   "defaultServiceNpcLicenses": 2,
   "discordLifecycleChannelId": 0,
   "discordMembershipChannelId": 0,
-  "discordExtrasChannelId": 0
+  "discordExtrasChannelId": 0,
+  "discordLifecycleThreadTopic": "",
+  "discordMembershipThreadTopic": "",
+  "discordExtrasThreadTopic": ""
 }

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.5.1] - 2026-10-15 | Discord event threads
+
+- feat: Route faction lifecycle, membership, and extra purchase events into configurable threads.
+
 ## [0.5.0] - 2026-10-14 | Faction trader and crier ownership
 
 - feat: allow leaders and officers to manage faction traders and market criers; block dissolution while either remains.

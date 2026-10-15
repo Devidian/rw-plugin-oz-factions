@@ -49,3 +49,7 @@ runtime asset loader reads plugin resources from that JAR.
 
 Run `mvn -B -DskipTests package` and `mvn -B test`. When the local Maven cache
 is unavailable, use an isolated cache with `-Dmaven.repo.local=/tmp/...`.
+
+## Discord event threads
+
+Existing Discord event channel IDs remain in effect. Each route also accepts an optional thread topic: `discordLifecycleThreadTopic`, `discordMembershipThreadTopic`, and `discordExtrasThreadTopic` for faction event routes. Leave a topic blank to use the plugin display name from `plugin.yml`. Matching topics in the same parent channel share one thread. Topic routing requires compatible OZ Tools and Discord Connect with the bot enabled; an older Discord Connect logs a failure and does not send the event to the parent channel. Install OZ Tools, then Discord Connect, then this plugin.
