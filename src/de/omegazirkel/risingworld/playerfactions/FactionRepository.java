@@ -28,6 +28,43 @@ public final class FactionRepository {
         try (PreparedStatement s = db.prepareStatement(sql)) { s.setInt(1, playerDbId); try (ResultSet r=s.executeQuery()) { return r.next() ? Optional.of(new FactionMember(r.getInt(1),r.getInt(2),r.getLong(3),r.getLong(4),FactionRole.valueOf(r.getString(5)))) : Optional.empty(); } }
         catch (SQLException ex) { throw new IllegalStateException("Cannot load faction member", ex); }
     }
+
+    public synchronized boolean playerErasureReady(int playerDbId) {
+        try (var statement = db.prepareStatement("""
+                SELECT EXISTS(SELECT 1 FROM factions WHERE leader_db_id = ?1)
+                    OR EXISTS(SELECT 1 FROM faction_members WHERE player_db_id = ?1)
+                """)) {
+            statement.setInt(1, playerDbId);
+            try (var rows = statement.executeQuery()) { return rows.next() && !rows.getBoolean(1); }
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    public synchronized boolean erasePlayerData(int playerDbId) throws SQLException {
+        boolean autoCommit = db.getAutoCommit();
+        db.setAutoCommit(false);
+        try {
+            if (!playerErasureReady(playerDbId)) {
+                db.rollback();
+                return false;
+            }
+            try (var founder = db.prepareStatement("UPDATE factions SET founder_db_id = 0 WHERE founder_db_id = ?");
+                    var applications = db.prepareStatement("DELETE FROM faction_applications WHERE player_db_id = ?")) {
+                founder.setInt(1, playerDbId);
+                applications.setInt(1, playerDbId);
+                founder.executeUpdate();
+                applications.executeUpdate();
+            }
+            db.commit();
+            return true;
+        } catch (SQLException | RuntimeException ex) {
+            db.rollback();
+            throw ex;
+        } finally {
+            db.setAutoCommit(autoCommit);
+        }
+    }
     public Optional<Faction> faction(int factionId) { return faction("SELECT * FROM factions WHERE id=?", factionId); }
     public Optional<Faction> factionByName(String name) {
         try (PreparedStatement s = db.prepareStatement("SELECT * FROM factions WHERE name=? COLLATE NOCASE")) { s.setString(1, name); try (ResultSet r = s.executeQuery()) { return r.next() ? Optional.of(readFaction(r)) : Optional.empty(); } }
