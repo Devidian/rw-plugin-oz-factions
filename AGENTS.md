@@ -24,7 +24,7 @@ Does not own:
 - Route shared UI, i18n, settings, persistence, file-watching, and logger
   conventions through `rw-plugin-oz-tools` unless a repository-local need is
   explicitly documented.
-- Follow `.codex/agents.toml` for local agent roles, task classes, context loading, and escalation.
+- Follow `.codex/agents/*.toml` for local agent roles, task classes, context loading, and escalation.
 - Follow `docs/policies/repository-policy.md` for reusable governance rules.
 - Keep `README.md`, `HISTORY.md`, and `PLANS.md` aligned with structural changes.
 - The `plugin.yml` entry class is the sole Rising World `Listener` and the only
