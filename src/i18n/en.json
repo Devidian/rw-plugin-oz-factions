@@ -26,6 +26,9 @@
       "title": "Plugin Settings for PH_PLUGIN_NAME"
     },
     "setting": {
+      "discordlifecyclethreadtopic": {"label": "Faction lifecycle thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
+      "discordmembershipthreadtopic": {"label": "Faction membership thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
+      "discordextrasthreadtopic": {"label": "Faction extras thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
       "enablewelcomemessage": {
         "desc": "If true, this plugin sends a welcome message when a player joins.",
         "label": "Welcome message"

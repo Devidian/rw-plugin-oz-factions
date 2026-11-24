@@ -26,6 +26,9 @@
       "title": "Plugin Einstellungen für PH_PLUGIN_NAME"
     },
     "setting": {
+      "discordlifecyclethreadtopic": {"label": "Fraktionsereignisse-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
+      "discordmembershipthreadtopic": {"label": "Mitgliedschafts-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
+      "discordextrasthreadtopic": {"label": "Fraktions-Extras-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
       "enablewelcomemessage": {
         "desc": "Wenn aktiv, sendet dieses Plugin eine Willkommensnachricht, wenn ein Spieler beitritt.",
         "label": "Willkommensnachricht"

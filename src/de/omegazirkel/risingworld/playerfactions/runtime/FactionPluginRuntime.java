@@ -33,12 +33,15 @@ public final class FactionPluginRuntime {
     private FactionService service;
     private FactionPlayerEventHandler commands;
     private FactionCombatHandler combat;
+    private de.omegazirkel.risingworld.tools.privacy.PlayerErasureService.Registration erasureRegistration;
     public FactionPluginRuntime(PlayerFactions plugin) { this.plugin = plugin; settings = PluginSettings.getInstance(plugin); }
     public void enable() {
         settings.initSettings();
         Connection database = SQLiteConnectionFactory.open(plugin);
         repository = new FactionRepository(database);
         repository.initialize();
+        erasureRegistration = de.omegazirkel.risingworld.tools.privacy.PlayerErasureService.register(
+                "factions", repository::playerErasureReady, request -> repository.erasePlayerData(request.playerDbId()));
         service = new FactionService(plugin, repository, settings, new WalletBridge(plugin));
         for (FactionExtra extra : FactionExtra.values()) AssetManager.loadIconFromPlugin(plugin, extra.shopOfferId());
         new FactionShopBridge(plugin, service).registerOffers();
@@ -55,7 +58,13 @@ public final class FactionPluginRuntime {
         PluginInfoStatusProviders.registerProvider(new FactionPluginInfoStatusProvider(name, plugin.getDescription("version"), COMMAND));
         PlayerFactions.logger().info("OZ Player Factions enabled");
     }
-    public void disable() { String name = plugin.getDescription("name"); InventoryOverlayButtons.unregisterButtons(name); PluginShortcutVisibility.unregister(name); PluginInfoStatusProviders.unregisterProvider(name); }
+    public void disable() {
+        if (erasureRegistration != null) erasureRegistration.close();
+        String name = plugin.getDescription("name");
+        InventoryOverlayButtons.unregisterButtons(name);
+        PluginShortcutVisibility.unregister(name);
+        PluginInfoStatusProviders.unregisterProvider(name);
+    }
     public void reloadSettings(Path path) { settings.initSettings(path.toString()); }
     public FactionService service() { return service; }
     public FactionPlayerEventHandler commands() { return commands; }

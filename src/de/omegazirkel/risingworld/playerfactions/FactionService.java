@@ -23,7 +23,7 @@ public final class FactionService {
     private final FactionDiscordNotifier discord;
     private final Plugin plugin;
     public FactionService(Plugin plugin, FactionRepository repository, PluginSettings settings, WalletBridge wallet) {
-        this.plugin = plugin; this.repository = repository; this.wallet = wallet; this.settings = settings; this.permissions = new PermissionGroupProvisioner(plugin); this.discord = new FactionDiscordNotifier(new DiscordBridge(plugin), settings, de.omegazirkel.risingworld.tools.I18n.getInstance(plugin));
+        this.plugin = plugin; this.repository = repository; this.wallet = wallet; this.settings = settings; this.permissions = new PermissionGroupProvisioner(plugin); this.discord = new FactionDiscordNotifier(new DiscordBridge(plugin), settings, de.omegazirkel.risingworld.tools.I18n.getInstance(plugin), plugin.getDescription("name"));
     }
     public Integer factionIdFor(int playerDbId) { return repository.member(playerDbId).map(FactionMember::factionId).orElse(null); }
     public String roleFor(int playerDbId) { return repository.member(playerDbId).map(member -> member.role().name()).orElse(null); }
