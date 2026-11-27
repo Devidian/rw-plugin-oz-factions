@@ -45,6 +45,12 @@ runtime asset loader reads plugin resources from that JAR.
 - The plugin exposes its public facade through the entry plugin for optional
   OZ and external consumers; callers must tolerate this plugin being absent.
 
+## Historical leadership
+
+Use `python3 scripts/repair-faction-leadership.py snapshot.sqlite` to inspect an isolated SQLite snapshot. Add `--output repaired.sqlite` to create a new repaired copy at an unused path. The source is read-only.
+
+The tool retains the recorded leader if that member has the leader role. Otherwise it retains the longest-standing existing leader, breaking ties by player database ID. Other leader roles become officer roles. Membership, the founder and the faction account are retained. Factions without an eligible leader or with a conflicting cross-faction leader pointer are reported for review. Inspect the output before a separately authorized maintenance replacement. The original snapshot is the rollback point.
+
 ## Development
 
 Run `mvn -B -DskipTests package` and `mvn -B test`. When the local Maven cache

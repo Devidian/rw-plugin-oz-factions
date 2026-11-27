@@ -15,3 +15,6 @@ Current Development test work: [docs/active/next-250926b-icons.md](docs/active/n
 Every implementation plan must include objective, ownership, dependencies, risks, validation strategy, affected repositories/plugins, rollback considerations, and a markdown checkbox checklist.
 
 Discord event thread routing is implemented locally; Development Discord validation and the separately authorized release remain open. Configuration is documented in README.md.
+
+- [x] Verify offline historical leadership classification and repair against fabricated SQLite snapshots.
+- [ ] Inspect an authorized historical snapshot if a live inconsistency is reported, then review the repaired copy before any maintenance replacement.

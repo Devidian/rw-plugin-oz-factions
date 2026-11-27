@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an offline tool for inspecting and repairing conflicting historical faction leadership on a copy.
+
 ## [0.5.1] - 2026-10-15 | Discord event threads
 
 - feat: Route faction lifecycle, membership, and extra purchase events into configurable threads.
