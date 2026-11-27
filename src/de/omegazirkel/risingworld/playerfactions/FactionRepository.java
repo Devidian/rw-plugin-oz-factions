@@ -3,6 +3,7 @@ package de.omegazirkel.risingworld.playerfactions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Savepoint;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
@@ -103,6 +104,97 @@ public final class FactionRepository {
     public synchronized void deleteApplication(int id){try(PreparedStatement s=db.prepareStatement("DELETE FROM faction_applications WHERE id=?")){s.setInt(1,id);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot delete application",ex);}}
     public synchronized void removeMember(int playerDbId){try(PreparedStatement s=db.prepareStatement("DELETE FROM faction_members WHERE player_db_id=?")){s.setInt(1,playerDbId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot remove faction member",ex);}}
     public synchronized void changeRole(int playerDbId,FactionRole role){try(PreparedStatement s=db.prepareStatement("UPDATE faction_members SET role=? WHERE player_db_id=?")){s.setString(1,role.name());s.setInt(2,playerDbId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot change faction role",ex);}}
+    /**
+     * Transfer all leadership authorities together. A stale or inconsistent
+     * faction is left untouched for explicit reconciliation.
+     */
+    synchronized void transferLeadership(int factionId, int actorDbId, int targetDbId) {
+        if (actorDbId == targetDbId) {
+            throw new IllegalArgumentException("Leadership must be transferred to another member.");
+        }
+
+        boolean ownTransaction;
+        try {
+            ownTransaction = db.getAutoCommit();
+        } catch (SQLException ex) {
+            throw new IllegalStateException("Cannot inspect faction transaction", ex);
+        }
+        Savepoint savepoint = null;
+        boolean transactionEnded = false;
+        try {
+            if (ownTransaction) {
+                db.setAutoCommit(false);
+            } else {
+                savepoint = db.setSavepoint();
+            }
+            try (PreparedStatement update = db.prepareStatement("""
+                    UPDATE factions SET leader_db_id=?
+                    WHERE id=? AND leader_db_id=?
+                      AND EXISTS (SELECT 1 FROM faction_members
+                                  WHERE faction_id=? AND player_db_id=? AND role='LEADER')
+                      AND EXISTS (SELECT 1 FROM faction_members
+                                  WHERE faction_id=? AND player_db_id=? AND role<>'LEADER')
+                      AND (SELECT COUNT(*) FROM faction_members
+                           WHERE faction_id=? AND role='LEADER')=1
+                    """)) {
+                update.setInt(1, targetDbId);
+                update.setInt(2, factionId);
+                update.setInt(3, actorDbId);
+                update.setInt(4, factionId);
+                update.setInt(5, actorDbId);
+                update.setInt(6, factionId);
+                update.setInt(7, targetDbId);
+                update.setInt(8, factionId);
+                if (update.executeUpdate() != 1) {
+                    throw new IllegalStateException("Faction leadership changed or is inconsistent.");
+                }
+            }
+            try (PreparedStatement update = db.prepareStatement(
+                    "UPDATE faction_members SET role=? WHERE faction_id=? AND player_db_id=? AND role=?")) {
+                update.setString(1, FactionRole.OFFICER.name());
+                update.setInt(2, factionId);
+                update.setInt(3, actorDbId);
+                update.setString(4, FactionRole.LEADER.name());
+                if (update.executeUpdate() != 1) throw new SQLException("Current leader changed during transfer.");
+                // The target must still be a non-leader in this faction.
+                try (PreparedStatement promote = db.prepareStatement(
+                        "UPDATE faction_members SET role=? WHERE faction_id=? AND player_db_id=? AND role<>?")) {
+                    promote.setString(1, FactionRole.LEADER.name());
+                    promote.setInt(2, factionId);
+                    promote.setInt(3, targetDbId);
+                    promote.setString(4, FactionRole.LEADER.name());
+                    if (promote.executeUpdate() != 1) throw new SQLException("Target changed during transfer.");
+                }
+            }
+            if (ownTransaction) {
+                db.commit();
+                transactionEnded = true;
+            } else {
+                db.releaseSavepoint(savepoint);
+            }
+        } catch (SQLException | RuntimeException ex) {
+            try {
+                if (ownTransaction) {
+                    db.rollback();
+                    transactionEnded = true;
+                } else if (savepoint != null) {
+                    db.rollback(savepoint);
+                    db.releaseSavepoint(savepoint);
+                }
+            } catch (SQLException rollback) {
+                ex.addSuppressed(rollback);
+            }
+            throw new IllegalStateException("Cannot transfer faction leadership", ex);
+        } finally {
+            if (ownTransaction && transactionEnded) {
+                try {
+                    db.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    throw new IllegalStateException("Cannot restore database transaction mode", ex);
+                }
+            }
+        }
+    }
     public synchronized void updateColor(int factionId,String color){try(PreparedStatement s=db.prepareStatement("UPDATE factions SET color=? WHERE id=?")){s.setString(1,color);s.setInt(2,factionId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot update faction color",ex);}}
     public synchronized void addContribution(int playerDbId,long value){try(PreparedStatement s=db.prepareStatement("UPDATE faction_members SET contributed=contributed+? WHERE player_db_id=?")){s.setLong(1,value);s.setInt(2,playerDbId);s.executeUpdate();}catch(SQLException ex){throw new IllegalStateException("Cannot update faction contribution",ex);}}
     public synchronized boolean recordExtraPurchase(int factionId, FactionExtra extra, long price, String correlationId) {

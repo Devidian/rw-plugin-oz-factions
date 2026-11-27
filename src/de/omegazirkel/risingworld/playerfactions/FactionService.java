@@ -226,7 +226,7 @@ public final class FactionService {
         FactionMember actor=repository.member(actorDbId).orElseThrow(); FactionMember target=repository.member(targetDbId).orElseThrow();
         if(actor.factionId()!=target.factionId()) throw new IllegalArgumentException("Member is not in your faction.");
         if(actor.role()==FactionRole.LEADER) {
-            if(targetRole==FactionRole.LEADER) { repository.changeRole(actorDbId,FactionRole.OFFICER); repository.changeRole(targetDbId,FactionRole.LEADER); return; }
+            if(targetRole==FactionRole.LEADER) { repository.transferLeadership(actor.factionId(), actorDbId, targetDbId); return; }
             if(target.role()==FactionRole.LEADER) throw new IllegalStateException("Leadership must be transferred.");
             repository.changeRole(targetDbId,targetRole); return;
         }

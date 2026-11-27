@@ -11,7 +11,7 @@ Own faction membership, applications, roles and SQLite. The facade exposes facti
 - [`FactionService`](../../src/de/omegazirkel/risingworld/playerfactions/FactionService.java) — faction workflows.
 - [`FactionRepository`](../../src/de/omegazirkel/risingworld/playerfactions/FactionRepository.java) — SQLite data.
 - [`FactionCombatHandler`](../../src/de/omegazirkel/risingworld/playerfactions/runtime/FactionCombatHandler.java) — PvP event handler.
-- [Tests](../../src-test/de/omegazirkel/risingworld/playerfactions/) cover repository behavior. Verify relevant scenarios before implementing changes.
+- [Leadership transfer tests](../../src-test/de/omegazirkel/risingworld/playerfactions/FactionLeadershipTransferTest.java) cover atomic role and leader updates, failure rollback and stale requests. [Other tests](../../src-test/de/omegazirkel/risingworld/playerfactions/) cover repository behavior.
 - [Repository index](../README.md) and [settings defaults](../../src/settings.default.json).
 
 ## Dependencies
