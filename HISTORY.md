@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Add an offline tool for inspecting and repairing conflicting historical faction leadership on a copy.
+## [0.5.3] - 2026-11-27 | OZ Player Factions leadership integrity
+
+- Leadership transfer keeps the leader record and member roles consistent through saved changes and reload.
+- An offline inspection and repair tool can demote duplicate leader roles on a database copy. It reports missing or conflicting identities for individual review. Always apply the forward fix and back up the data before considering a separately approved repair.
 
 ## [0.5.1] - 2026-10-15 | Discord event threads
 
