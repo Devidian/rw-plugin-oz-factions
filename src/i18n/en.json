@@ -26,9 +26,37 @@
       "title": "Plugin Settings for PH_PLUGIN_NAME"
     },
     "setting": {
-      "discordlifecyclethreadtopic": {"label": "Faction lifecycle thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
-      "discordmembershipthreadtopic": {"label": "Faction membership thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
-      "discordextrasthreadtopic": {"label": "Faction extras thread", "desc": "Blank uses the plugin display name. The same channel and thread name reuse one thread."},
+      "eventlogs": {
+        "label": "Event logs",
+        "desc": "Select events sent to OZ Events.",
+        "tc": {
+          "factions": {
+            "discord": {
+              "founded": {
+                "label": "Faction founded"
+              },
+              "dissolved": {
+                "label": "Faction dissolved"
+              },
+              "joined": {
+                "label": "Member joined"
+              },
+              "left": {
+                "label": "Member left"
+              },
+              "removed": {
+                "label": "Member removed"
+              },
+              "extra": {
+                "label": "Faction extra purchased"
+              }
+            }
+          }
+        }
+      },
+
+
+
       "enablewelcomemessage": {
         "desc": "If true, this plugin sends a welcome message when a player joins.",
         "label": "Welcome message"
@@ -77,11 +105,7 @@
       "defaultclaimlicenses": { "label": "Default Land Claim licenses", "desc": "Faction Land Claim licenses before extras." },
       "defaulttraderlicenses": { "label": "Default trader licenses", "desc": "Faction trader licenses before extras." },
       "defaultcrierlicenses": { "label": "Default crier licenses", "desc": "Faction crier licenses before extras." },
-      "defaultservicenpclicenses": { "label": "Default service NPC licenses", "desc": "Faction service NPC licenses before extras." },
-      "discord": { "label": "Discord", "desc": "Optional Discord Connect event channels." },
-      "discordlifecyclechannelid": { "label": "Faction lifecycle channel", "desc": "Creation and dissolution; zero disables it." },
-      "discordmembershipchannelid": { "label": "Faction membership channel", "desc": "Join, leave and removal; zero disables it." },
-      "discordextraschannelid": { "label": "Faction extras channel", "desc": "Extra-license purchases; zero disables it." }
+      "defaultservicenpclicenses": { "label": "Default service NPC licenses", "desc": "Faction service NPC licenses before extras." }
     },
     "factions": {
       "info": "\u003cb\u003ePH_PLUGIN_NAME\u003c/b\u003e\nVersion: PH_PLUGIN_VERSION\nCommand: /PH_PLUGIN_CMD\nCreate and manage your faction.",

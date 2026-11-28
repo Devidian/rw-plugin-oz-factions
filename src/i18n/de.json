@@ -26,9 +26,37 @@
       "title": "Plugin Einstellungen für PH_PLUGIN_NAME"
     },
     "setting": {
-      "discordlifecyclethreadtopic": {"label": "Fraktionsereignisse-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
-      "discordmembershipthreadtopic": {"label": "Mitgliedschafts-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
-      "discordextrasthreadtopic": {"label": "Fraktions-Extras-Thread", "desc": "Leer verwendet den Plugin-Namen. Gleicher Kanal und Thread-Titel nutzen denselben Thread."},
+      "eventlogs": {
+        "label": "Ereignisprotokolle",
+        "desc": "Ereignisse auswählen, die an OZ Events gesendet werden.",
+        "tc": {
+          "factions": {
+            "discord": {
+              "founded": {
+                "label": "Fraktion gegründet"
+              },
+              "dissolved": {
+                "label": "Fraktion aufgelöst"
+              },
+              "joined": {
+                "label": "Mitglied beigetreten"
+              },
+              "left": {
+                "label": "Mitglied ausgetreten"
+              },
+              "removed": {
+                "label": "Mitglied entfernt"
+              },
+              "extra": {
+                "label": "Fraktionserweiterung gekauft"
+              }
+            }
+          }
+        }
+      },
+
+
+
       "enablewelcomemessage": {
         "desc": "Wenn aktiv, sendet dieses Plugin eine Willkommensnachricht, wenn ein Spieler beitritt.",
         "label": "Willkommensnachricht"
@@ -77,11 +105,7 @@
       "defaultclaimlicenses": { "label": "Standard-LandClaim-Lizenzen", "desc": "Fraktions-LandClaim-Lizenzen vor Extras." },
       "defaulttraderlicenses": { "label": "Standard-Trader-Lizenzen", "desc": "Fraktions-Trader-Lizenzen vor Extras." },
       "defaultcrierlicenses": { "label": "Standard-Marktschreier-Lizenzen", "desc": "Fraktions-Marktschreier-Lizenzen vor Extras." },
-      "defaultservicenpclicenses": { "label": "Standard-Service-NPC-Lizenzen", "desc": "Fraktions-Service-NPC-Lizenzen vor Extras." },
-      "discord": { "label": "Discord", "desc": "Optionale Discord-Connect-Ereigniskanäle." },
-      "discordlifecyclechannelid": { "label": "Fraktions-Lebenszykluskanal", "desc": "Gründung und Auflösung; 0 deaktiviert den Kanal." },
-      "discordmembershipchannelid": { "label": "Fraktions-Mitgliederkanal", "desc": "Beitritt, Austritt und Ausschluss; 0 deaktiviert den Kanal." },
-      "discordextraschannelid": { "label": "Fraktions-Extras-Kanal", "desc": "Käufe zusätzlicher Lizenzen; 0 deaktiviert den Kanal." }
+      "defaultservicenpclicenses": { "label": "Standard-Service-NPC-Lizenzen", "desc": "Fraktions-Service-NPC-Lizenzen vor Extras." }
     },
     "factions": {
       "info": "\u003cb\u003ePH_PLUGIN_NAME\u003c/b\u003e\nVersion: PH_PLUGIN_VERSION\nBefehl: /PH_PLUGIN_CMD\nGründe und verwalte deine Fraktion.",

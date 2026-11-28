@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.6.0] - 2026-11-28 | OZ Events integration
+
+- Faction lifecycle, membership and extra events are available through OZ Events with per-event controls. Previous Discord event channel settings are ignored.
+- Requires OZ Tools 0.31.0 or later. OZ Events is optional.
+
 ## [0.5.3] - 2026-11-27 | OZ Player Factions leadership integrity
 
 - Leadership transfer keeps the leader record and member roles consistent through saved changes and reload.

@@ -15,10 +15,30 @@
   "defaultTraderLicenses": 0,
   "defaultCrierLicenses": 1,
   "defaultServiceNpcLicenses": 2,
-  "discordLifecycleChannelId": 0,
-  "discordMembershipChannelId": 0,
-  "discordExtrasChannelId": 0,
-  "discordLifecycleThreadTopic": "",
-  "discordMembershipThreadTopic": "",
-  "discordExtrasThreadTopic": ""
+  "eventLogs": {
+    "tc": {
+      "factions": {
+        "discord": {
+          "founded": {
+            "enabled": true
+          },
+          "dissolved": {
+            "enabled": true
+          },
+          "joined": {
+            "enabled": true
+          },
+          "left": {
+            "enabled": true
+          },
+          "removed": {
+            "enabled": true
+          },
+          "extra": {
+            "enabled": true
+          }
+        }
+      }
+    }
+  }
 }

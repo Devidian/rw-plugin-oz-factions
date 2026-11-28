@@ -101,7 +101,7 @@ public final class FactionService {
         if(faction.leaderDbId()!=playerDbId) throw new IllegalStateException("Only the faction leader can buy extras.");
         long current=extraPrice(faction.id(),extra); if(current!=displayedPrice) throw new IllegalStateException("The faction extra price changed.");
         boolean created=repository.recordExtraPurchase(faction.id(),extra,current,correlationId);
-        if(created) discord.extra(playerName(playerDbId), faction.name(), extra.label());
+        if(created) discord.extra(playerDbId, playerName(playerDbId), faction.name(), extra.label());
         return created;
     }
     public int memberLimit(Faction faction) { return settings.defaultMemberLimit + faction.extraMemberSlots(); }
@@ -135,7 +135,7 @@ public final class FactionService {
         if (!paid.success()) throw new IllegalStateException("tc.factions.error.foundation_payment_failed");
         String factionColor = color == null || color.isBlank() ? "#FFFFFF" : color;
         boolean provisioned = false;
-        try { permissions.create(group, name.trim(), factionColor); provisioned = true; permissions.reloadThrough(founder); Faction faction = repository.create(name.trim(), group, factionColor, founder.getDbID(), accountId); assignFactionMembersAfterPermissionsReload(faction); discord.founded(founder.getName(), faction.name()); return faction; }
+        try { permissions.create(group, name.trim(), factionColor); provisioned = true; permissions.reloadThrough(founder); Faction faction = repository.create(name.trim(), group, factionColor, founder.getDbID(), accountId); assignFactionMembersAfterPermissionsReload(faction); discord.founded(founder.getDbID(), founder.getName(), faction.name()); return faction; }
         catch (Exception ex) {
             if (provisioned) try { permissions.remove(group); } catch (Exception ignored) { PlayerFactions.logger().error("Could not remove failed faction group " + group); }
             wallet.reverseAccountTransferIdempotent(correlation, correlation + ":reversal", "Faction foundation failed", "OZPlayerFactions");
@@ -162,7 +162,7 @@ public final class FactionService {
         if (repository.memberCount(faction.id()) >= settings.defaultMemberLimit + faction.extraMemberSlots()) throw new IllegalStateException("Faction member limit reached.");
         repository.addMember(faction.id(), application.playerDbId(), FactionRole.NEWCOMER, System.currentTimeMillis());
         repository.updateApplication(applicationId, FactionApplicationStatus.WITHDRAWN);
-        assignFactionMember(application.playerDbId(), faction); discord.member("tc.factions.discord.joined", playerName(application.playerDbId()), faction.name());
+        assignFactionMember(application.playerDbId(), faction); discord.member(application.playerDbId(), "tc.factions.discord.joined", playerName(application.playerDbId()), faction.name());
     }
     public void reject(int actorDbId, int applicationId) { FactionApplication a=repository.application(applicationId).orElseThrow(); requireManager(actorDbId,a.factionId()); if(a.status()!=FactionApplicationStatus.OPEN)throw new IllegalStateException("Application is no longer open."); repository.updateApplication(applicationId,FactionApplicationStatus.REJECTED); }
     public void withdraw(int playerDbId,int applicationId) { FactionApplication a=repository.application(applicationId).orElseThrow(); if(a.playerDbId()!=playerDbId)throw new IllegalArgumentException("Not your application."); if(a.status()!=FactionApplicationStatus.OPEN)throw new IllegalStateException("This application cannot be withdrawn."); repository.updateApplication(applicationId,FactionApplicationStatus.WITHDRAWN); }
@@ -187,8 +187,8 @@ public final class FactionService {
         if(!result.success()) throw new IllegalStateException(result.message());
         repository.addContribution(player.getDbID(),value);
     }
-    public void leave(Player player) { FactionMember member=repository.member(player.getDbID()).orElseThrow(() -> new IllegalStateException("Not in a faction.")); if(member.role()==FactionRole.LEADER)throw new IllegalStateException("tc.factions.error.transfer_leadership_before_leaving"); String name=repository.faction(member.factionId()).orElseThrow().name(); repository.removeMember(player.getDbID()); permissions.assignDefault(player); discord.member("tc.factions.discord.left",player.getName(),name); }
-    public void remove(int actorDbId, int targetDbId) { FactionMember actor=repository.member(actorDbId).orElseThrow(); FactionMember member=repository.member(targetDbId).orElseThrow(); Faction faction=repository.faction(member.factionId()).orElseThrow(); if(actor.factionId()!=member.factionId()||!actor.role().canManageMembers()||member.role().ordinal()>=actor.role().ordinal())throw new IllegalStateException("You cannot remove this member."); repository.removeMember(targetDbId); Player target=Server.getPlayerByDbID(targetDbId); if(target!=null)permissions.assignDefault(target); discord.member("tc.factions.discord.removed",playerName(targetDbId),faction.name()); }
+    public void leave(Player player) { FactionMember member=repository.member(player.getDbID()).orElseThrow(() -> new IllegalStateException("Not in a faction.")); if(member.role()==FactionRole.LEADER)throw new IllegalStateException("tc.factions.error.transfer_leadership_before_leaving"); String name=repository.faction(member.factionId()).orElseThrow().name(); repository.removeMember(player.getDbID()); permissions.assignDefault(player); discord.member(player.getDbID(), "tc.factions.discord.left",player.getName(),name); }
+    public void remove(int actorDbId, int targetDbId) { FactionMember actor=repository.member(actorDbId).orElseThrow(); FactionMember member=repository.member(targetDbId).orElseThrow(); Faction faction=repository.faction(member.factionId()).orElseThrow(); if(actor.factionId()!=member.factionId()||!actor.role().canManageMembers()||member.role().ordinal()>=actor.role().ordinal())throw new IllegalStateException("You cannot remove this member."); repository.removeMember(targetDbId); Player target=Server.getPlayerByDbID(targetDbId); if(target!=null)permissions.assignDefault(target); discord.member(targetDbId, "tc.factions.discord.removed",playerName(targetDbId),faction.name()); }
     public void reconcilePermissionGroup(Player player) {
         repository.factionFor(player.getDbID()).ifPresentOrElse(f -> {
             if (!f.groupName().equals(player.getPermissionGroup()) && permissionGroupAvailable(f.groupName())) permissions.assign(player, f.groupName());
@@ -262,7 +262,7 @@ public final class FactionService {
         }
         for(FactionMember member:repository.members(faction.id())) { Player online=Server.getPlayerByDbID(member.playerDbId()); if(online!=null) permissions.assignDefault(online); }
         try { permissions.remove(faction.groupName()); } catch(Exception ex) { throw new IllegalStateException("Could not remove faction permission group",ex); }
-        repository.deleteFaction(faction.id()); discord.dissolved(leader.getName(),faction.name());
+        repository.deleteFaction(faction.id()); discord.dissolved(leader.getDbID(), leader.getName(),faction.name());
         wallet.archiveSystemAccount(faction.accountId(),"OZPlayerFactions");
     }
     private void requireNoFactionNpc(int factionId, String pluginName, String method, String message) {

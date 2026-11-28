@@ -23,7 +23,7 @@ must use the idempotent Factions facade and a matching active Shop reservation.
 ## Configuration
 
 `settings.default.json` defines member limits, founding cost, default resource
-licenses and optional Discord channel IDs. Runtime settings are world-scoped as
+licenses. Runtime settings are world-scoped as
 `settings.<world>.json` and managed through the shared Tools settings UI.
 
 When a compatible OZ - Shop is already loaded, its plugin-offers tab contains
@@ -56,6 +56,12 @@ The tool retains the recorded leader if that member has the leader role. Otherwi
 Run `mvn -B -DskipTests package` and `mvn -B test`. When the local Maven cache
 is unavailable, use an isolated cache with `-Dmaven.repo.local=/tmp/...`.
 
-## Discord event threads
+## OZ Events integration
 
-Existing Discord event channel IDs remain in effect. Each route also accepts an optional thread topic: `discordLifecycleThreadTopic`, `discordMembershipThreadTopic`, and `discordExtrasThreadTopic` for faction event routes. Leave a topic blank to use the plugin display name from `plugin.yml`. Matching topics in the same parent channel share one thread. Topic routing requires compatible OZ Tools and Discord Connect with the bot enabled; an older Discord Connect logs a failure and does not send the event to the parent channel. Install OZ Tools, then Discord Connect, then this plugin.
+Each event code has an `eventLogs.<code>.enabled` world setting and an administrator setting. Missing values default to enabled. The switches only control event reporting.
+
+Event reports use the optional OZ Events provider. Install OZ Tools 0.31.0 or later before installing this plugin.
+Gameplay continues when OZ Events is absent. Existing Discord event channel and thread
+settings no longer route these reports. Configure the event language, retention and
+optional Discord forwarding in OZ Events. Forwarding is disabled by default and
+legacy settings do not enable it. Discord Connect 0.25.2 or later provides the optional threaded transport.

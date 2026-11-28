@@ -20,3 +20,5 @@ Own faction membership, applications, roles and SQLite. The facade exposes facti
 - `rw-plugin-oz-wallet/ledger` — runtime faction system accounts. [Integration source](../../src/de/omegazirkel/risingworld/PlayerFactions.java)
 - `rw-plugin-oz-shop/api` — optional faction offer registration. [Integration source](../../src/de/omegazirkel/risingworld/playerfactions/FactionShopBridge.java)
 - `rw-plugin-oz-service-npc/npcs` — optional faction resource counting through `getFactionServiceNpcCount`. [Call site](../../src/de/omegazirkel/risingworld/playerfactions/FactionService.java)
+- `rw-plugin-oz-marketplace/criers` — optional count of faction criers before dissolution. [Call site](../../src/de/omegazirkel/risingworld/playerfactions/FactionService.java)
+- `rw-plugin-oz-tools/shared-api` — optional faction events through EventBridge. [Call site](../../src/de/omegazirkel/risingworld/playerfactions/FactionDiscordNotifier.java)

@@ -1,18 +1,44 @@
 package de.omegazirkel.risingworld.playerfactions;
 
-import de.omegazirkel.risingworld.tools.I18n;
+import java.time.Instant;
+import java.util.Map;
 
-/** Optional event forwarding; a missing Discord Connect installation is a no-op. */
+import de.omegazirkel.risingworld.tools.I18n;
+import de.omegazirkel.risingworld.tools.bridge.AuditEvent;
+import de.omegazirkel.risingworld.tools.bridge.EventMessage;
+
+/** Reports faction changes to the optional event provider. */
 final class FactionDiscordNotifier {
-    private final DiscordBridge discord;
-    private final PluginSettings settings;
     private final I18n i18n;
-    private final String displayName;
-    FactionDiscordNotifier(DiscordBridge discord, PluginSettings settings, I18n i18n, String displayName) { this.discord=discord;this.settings=settings;this.i18n=i18n;this.displayName=displayName; }
-    void founded(String playerName,String factionName){send(settings.discordLifecycleChannelId,settings.discordLifecycleThreadTopic,"tc.factions.discord.founded",playerName,factionName);}
-    void dissolved(String playerName,String factionName){send(settings.discordLifecycleChannelId,settings.discordLifecycleThreadTopic,"tc.factions.discord.dissolved",playerName,factionName);}
-    void member(String key,String playerName,String factionName){send(settings.discordMembershipChannelId,settings.discordMembershipThreadTopic,key,playerName,factionName);}
-    void extra(String playerName,String factionName,String extra){send(settings.discordExtrasChannelId,settings.discordExtrasThreadTopic,"tc.factions.discord.extra",playerName,factionName,extra);}
-    private void send(long channel,String topic,String key,String playerName,String factionName){if(channel<=0L||!discord.isAvailable())return;String text=i18n.get(key,discord.getBotLanguage()).replace("PH_PLAYER",playerName).replace("PH_FACTION",factionName);discord.sendTextMessage(text,channel,null,topic == null || topic.isBlank() ? displayName : topic.trim());}
-    private void send(long channel,String topic,String key,String playerName,String factionName,String extra){if(channel<=0L||!discord.isAvailable())return;String text=i18n.get(key,discord.getBotLanguage()).replace("PH_PLAYER",playerName).replace("PH_FACTION",factionName).replace("PH_EXTRA",extra);discord.sendTextMessage(text,channel,null,topic == null || topic.isBlank() ? displayName : topic.trim());}
+    private final PluginSettings settings;
+
+    FactionDiscordNotifier(DiscordBridge discord, PluginSettings settings, I18n i18n, String displayName) {
+        this.i18n = i18n;
+        this.settings = settings;
+    }
+
+    void founded(int id, String playerName, String factionName) {
+        send(id, playerName, factionName, "tc.factions.discord.founded", "lifecycle", "");
+    }
+
+    void dissolved(int id, String playerName, String factionName) {
+        send(id, playerName, factionName, "tc.factions.discord.dissolved", "lifecycle", "");
+    }
+
+    void member(int id, String key, String playerName, String factionName) {
+        send(id, playerName, factionName, key, "membership", "");
+    }
+
+    void extra(int id, String playerName, String factionName, String extra) {
+        send(id, playerName, factionName, "tc.factions.discord.extra", "extras", extra);
+    }
+
+    private void send(int id, String playerName, String factionName, String key, String channel, String extra) {
+        settings.eventLogs.publish(key, () -> {
+            String snapshot = playerName == null || playerName.equals("#" + id) ? "-" : playerName;
+            return new AuditEvent(id, snapshot,
+                    EventMessage.localized(i18n, key, Map.of("PH_PLAYER", snapshot, "PH_FACTION", factionName,
+                            "PH_EXTRA", extra)), Instant.now(), key, "oz-player-factions", channel);
+        });
+    }
 }

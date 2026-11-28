@@ -10,6 +10,7 @@ import java.util.Map;
 
 import de.omegazirkel.risingworld.PlayerFactions;
 import de.omegazirkel.risingworld.tools.settings.AdminSettingsEntry;
+import de.omegazirkel.risingworld.tools.settings.EventLogSettings;
 import de.omegazirkel.risingworld.tools.settings.AdminSettingsType;
 import de.omegazirkel.risingworld.tools.settings.JsonSettingsFile;
 import de.omegazirkel.risingworld.tools.settings.SettingsFileEditor;
@@ -19,6 +20,8 @@ import net.risingworld.api.World;
 public final class PluginSettings {
     private static PluginSettings instance;
     private static PlayerFactions plugin;
+    public final EventLogSettings eventLogs = new EventLogSettings("tc.factions.discord.founded", "tc.factions.discord.dissolved",
+            "tc.factions.discord.joined", "tc.factions.discord.left", "tc.factions.discord.removed", "tc.factions.discord.extra");
     public int defaultMemberLimit = 10;
     public long foundationCost = 5000L;
     public long memberSlotBaseCost = 1000L;
@@ -26,8 +29,6 @@ public final class PluginSettings {
     public long claimLicenseBaseCost = 1000L, traderLicenseBaseCost = 1000L, crierLicenseBaseCost = 1000L, serviceNpcLicenseBaseCost = 1000L;
     public double claimLicenseIncrease = .1d, traderLicenseIncrease = .1d, crierLicenseIncrease = .1d, serviceNpcLicenseIncrease = .1d;
     public int defaultClaimLicenses = 1, defaultTraderLicenses = 0, defaultCrierLicenses = 1, defaultServiceNpcLicenses = 2;
-    public long discordLifecycleChannelId, discordMembershipChannelId, discordExtrasChannelId;
-    public String discordLifecycleThreadTopic = "", discordMembershipThreadTopic = "", discordExtrasThreadTopic = "";
     private Path settingsFile;
     private Map<String, String> current = Map.of(), defaults = Map.of();
     public static PluginSettings getInstance(PlayerFactions value) { plugin = value; return getInstance(); }
@@ -39,6 +40,7 @@ public final class PluginSettings {
         try {
             if (Files.notExists(settingsFile) && Files.exists(defaultFile)) JsonSettingsFile.writeFlatAtomically(settingsFile, JsonSettingsFile.loadFlat(defaultFile));
             current = JsonSettingsFile.loadFlat(settingsFile); defaults = JsonSettingsFile.loadFlat(defaultFile);
+            eventLogs.load(current::get);
             defaultMemberLimit = integer("defaultMemberLimit", 10); foundationCost = positiveLong("foundationCost", 5000L);
             memberSlotBaseCost = positiveLong("memberSlotBaseCost", 1000L); memberSlotIncrease = decimal("memberSlotIncrease", .1d);
             claimLicenseBaseCost=positiveLong("claimLicenseBaseCost",1000L); claimLicenseIncrease=decimal("claimLicenseIncrease",.1d);
@@ -47,15 +49,12 @@ public final class PluginSettings {
             serviceNpcLicenseBaseCost=positiveLong("serviceNpcLicenseBaseCost",1000L); serviceNpcLicenseIncrease=decimal("serviceNpcLicenseIncrease",.1d);
             defaultClaimLicenses = integer("defaultClaimLicenses", 1); defaultTraderLicenses = integer("defaultTraderLicenses", 0);
             defaultCrierLicenses = integer("defaultCrierLicenses", 1); defaultServiceNpcLicenses = integer("defaultServiceNpcLicenses", 2);
-            discordLifecycleChannelId = positiveLong("discordLifecycleChannelId", 0L); discordMembershipChannelId = positiveLong("discordMembershipChannelId", 0L); discordExtrasChannelId = positiveLong("discordExtrasChannelId", 0L);
-            discordLifecycleThreadTopic = current.getOrDefault("discordLifecycleThreadTopic", defaults.getOrDefault("discordLifecycleThreadTopic", ""));
-            discordMembershipThreadTopic = current.getOrDefault("discordMembershipThreadTopic", defaults.getOrDefault("discordMembershipThreadTopic", ""));
-            discordExtrasThreadTopic = current.getOrDefault("discordExtrasThreadTopic", defaults.getOrDefault("discordExtrasThreadTopic", ""));
         } catch (IOException | NumberFormatException ex) { throw new IllegalStateException("Cannot load faction settings", ex); }
     }
     public long memberSlotCost(int alreadyPurchased) { return Math.round(memberSlotBaseCost + (memberSlotBaseCost * memberSlotIncrease) * Math.max(0, alreadyPurchased)); }
     public long extraCost(FactionExtra extra, int alreadyPurchased) { long base=switch(extra) { case MEMBER_SLOT -> memberSlotBaseCost; case CLAIM_LICENSE -> claimLicenseBaseCost; case TRADER_LICENSE -> traderLicenseBaseCost; case CRIER_LICENSE -> crierLicenseBaseCost; case SERVICE_NPC_LICENSE -> serviceNpcLicenseBaseCost; }; double increase=switch(extra) { case MEMBER_SLOT -> memberSlotIncrease; case CLAIM_LICENSE -> claimLicenseIncrease; case TRADER_LICENSE -> traderLicenseIncrease; case CRIER_LICENSE -> crierLicenseIncrease; case SERVICE_NPC_LICENSE -> serviceNpcLicenseIncrease; }; return Math.round(base + (base * increase) * Math.max(0, alreadyPurchased)); }
-    public List<AdminSettingsEntry> adminSettingsEntries() { return Arrays.asList(
+    public List<AdminSettingsEntry> adminSettingsEntries() {
+        List<AdminSettingsEntry> entries = new java.util.ArrayList<>(Arrays.asList(
             AdminSettingsEntry.group("factions", "Factions", "Faction limits and prices."),
             entry("defaultMemberLimit", "Default member limit", "Members available before extra slots.", AdminSettingsType.INTEGER),
             entry("foundationCost", "Foundation cost", "Default-currency cost for a new faction.", AdminSettingsType.INTEGER),
@@ -68,14 +67,10 @@ public final class PluginSettings {
             entry("defaultClaimLicenses", "Default claim licenses", "Faction claim licenses before extras.", AdminSettingsType.INTEGER),
             entry("defaultTraderLicenses", "Default trader licenses", "Faction trader licenses before extras.", AdminSettingsType.INTEGER),
             entry("defaultCrierLicenses", "Default crier licenses", "Faction crier licenses before extras.", AdminSettingsType.INTEGER),
-            entry("defaultServiceNpcLicenses", "Default service NPC licenses", "Faction service licenses before extras.", AdminSettingsType.INTEGER),
-            AdminSettingsEntry.group("discord", "Discord", "Optional Discord Connect event channels."),
-            entry("discordLifecycleChannelId", "Faction lifecycle channel", "Creation and dissolution events; zero disables it.", AdminSettingsType.STRING),
-            entry("discordMembershipChannelId", "Faction membership channel", "Join, leave and removal events; zero disables it.", AdminSettingsType.STRING),
-            entry("discordExtrasChannelId", "Faction extras channel", "Extra-license purchase events; zero disables it.", AdminSettingsType.STRING),
-            entry("discordLifecycleThreadTopic", "Faction lifecycle thread", "Blank uses the plugin display name.", AdminSettingsType.STRING),
-            entry("discordMembershipThreadTopic", "Faction membership thread", "Blank uses the plugin display name.", AdminSettingsType.STRING),
-            entry("discordExtrasThreadTopic", "Faction extras thread", "Blank uses the plugin display name.", AdminSettingsType.STRING)); }
+            entry("defaultServiceNpcLicenses", "Default service NPC licenses", "Faction service licenses before extras.", AdminSettingsType.INTEGER)));
+        entries.addAll(eventLogs.entries(settingsFile));
+        return entries;
+    }
     private AdminSettingsEntry entry(String key, String label, String description, AdminSettingsType type) { return new AdminSettingsEntry(key, label, description, current.getOrDefault(key, defaults.getOrDefault(key, "")), defaults.getOrDefault(key, ""), type, false, value -> SettingsFileEditor.writeValue(settingsFile, key, value)); }
     private int integer(String key, int fallback) { return Integer.parseInt(current.getOrDefault(key, defaults.getOrDefault(key, Integer.toString(fallback)))); }
     private long positiveLong(String key, long fallback) { return Math.max(0L, Long.parseLong(current.getOrDefault(key, defaults.getOrDefault(key, Long.toString(fallback))))); }
